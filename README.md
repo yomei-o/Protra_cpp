@@ -32,7 +32,14 @@ int main(int argc,char* argv[])
 	return 0;  
 }  
   
+# コンパイルと実行方法
+>g++ -o ProtraLang ProtraLang.cpp  
+コマンドラインから上記のコマンドを入力することでProtra言語のインタープリタをビルドすることができます。  
   
+>ProtraLang somefile.pt  
+上記のコマンドを入力することでプログラムファイルを実行します。
+
+
 # 未実装項目
 Pythonから使えるようにする予定ですが、まだできていません。  
 株系のビルトイン関数もまだ実装できていません。  
