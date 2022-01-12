@@ -1,8 +1,10 @@
 # Protra_cpp
 The Protra Language Interpreter in C++ (Header Only)   
 Protra言語のC++実装です。  
-ヘッダーオンリーのライブラリなのでヘッダーファイルをイングルードするだけで、ビルドせずに使うことができます。  
-
+ヘッダーオンリーのライブラリなのでヘッダーファイルをイングルードするだけで、使うことができます。  
+C++の標準テンプレートと標準ライブラリのみで実装しているので、Windows,Machintosh,Linuxなどあらゆる環境で動作します。  
+  
+  
 # How To Use
 使い方  
 プログラムの先頭で、#define PROTRA_LANG_IMPLをして、#include "Protra.h"をしてください。  
@@ -30,4 +32,9 @@ int main(int argc,char* argv[])
 	return 0;  
 }  
   
+  
+# 未実装項目
+Pythonから使えるようにする予定ですが、まだできていません。  
+株系のビルトイン関数もまだ実装できていません。  
+
 
