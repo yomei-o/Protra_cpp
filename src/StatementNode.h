@@ -44,7 +44,6 @@ public:
 }
 
 
-#ifdef PROTRA_LANG_IMPL
 
 #include "EmptyStatementNode.h"
 #include "ContinueStatementNode.h"
@@ -58,7 +57,7 @@ namespace Protra {
 namespace Lib {
 namespace Lang {
             
-std::shared_ptr<ExecutableNode> StatementNode::Parse(std::shared_ptr<ExecutableNode>& that, Scanner& scanner)
+inline std::shared_ptr<ExecutableNode> StatementNode::Parse(std::shared_ptr<ExecutableNode>& that, Scanner& scanner)
 {
     std::shared_ptr<ExecutableNode> ret;
     Token = scanner._Token;
@@ -103,8 +102,6 @@ std::shared_ptr<ExecutableNode> StatementNode::Parse(std::shared_ptr<ExecutableN
 }
 }
 }
-
-#endif
 
 #endif
 

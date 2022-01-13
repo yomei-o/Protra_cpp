@@ -32,7 +32,6 @@
 
 #define ENABLE_TYPEOF 
 
-#define PROTRA_LANG_IMPL
 #include "Protra.h"
 
 #include "TypeOfBuiltins.h"

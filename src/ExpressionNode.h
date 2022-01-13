@@ -59,7 +59,6 @@ public:
 }
 }
 
-#ifdef PROTRA_LANG_IMPL
 
 #include "AssignmentNode.h"
 
@@ -67,7 +66,7 @@ namespace Protra {
 namespace Lib {
 namespace Lang {
 
-std::shared_ptr<ExpressionNode> ExpressionNode::Parse(std::shared_ptr<ExpressionNode>& that, Scanner& scanner)
+inline std::shared_ptr<ExpressionNode> ExpressionNode::Parse(std::shared_ptr<ExpressionNode>& that, Scanner& scanner)
 {
     std::shared_ptr<ExpressionNode> ret;
 
@@ -85,7 +84,6 @@ std::shared_ptr<ExpressionNode> ExpressionNode::Parse(std::shared_ptr<Expression
 }
 }
 
-#endif
 
 #endif
 

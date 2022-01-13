@@ -32,22 +32,15 @@ namespace Lib {
 namespace Lang {
 
 
-#ifdef PROTRA_LANG_IMPL
-const char* ParseException(const char* msg, Token& token)
+inline const char* ParseException(const char* msg, Token& token)
 {
 	static char buf[1024];
 	sprintf(buf, "%s in %s: %d",msg,token.Filename.c_str(),token.LineNo );
 	return buf;
 }
-#else
-	const char* ParseException(const char* msg, Token& token);
-#endif
 
 }
 }
 }
-
 
 #endif
-
-

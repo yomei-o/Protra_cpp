@@ -28,16 +28,12 @@ namespace Protra {
 namespace Lib {
 namespace Lang {
 
-#ifdef PROTRA_LANG_IMPL
-const char* RuntimeException(const char* msg)
+inline const char* RuntimeException(const char* msg)
 {
 	static char buf[1024];
 	sprintf(buf, "%s",msg);
 	return buf;
 }
-#else
-	const char* RuntimeException(const char* msg);
-#endif
 
 }
 }
