@@ -21,6 +21,9 @@
 #define DF_VALUE_H_
 
 #include <string>
+#include <stdexcept>
+#include <vector>
+#include <memory>
 #include "RuntimeException.h"
 
 

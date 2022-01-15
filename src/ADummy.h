@@ -16,8 +16,8 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 // 
 
-#ifndef DF_IFSTATEMENTNODE_H_
-#define DF_IFSTATEMENTNODE_H_
+#ifndef DF_ADUMMY_H_
+#define DF_ADUMMY_H_
 
 #include "ExpressionNode.h"
 
