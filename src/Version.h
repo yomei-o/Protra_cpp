@@ -3,7 +3,7 @@
 
 //version 0.29
 
-#define PROTRA_LANG_VERSION 30
+#define PROTRA_LANG_VERSION 31
 
 
 #endif

@@ -23,6 +23,7 @@
 #include <string.h>
 #include <string>
 #include <stdexcept>
+#include "zengoopen.h"
 
 
 class StreamReader {
@@ -94,7 +95,8 @@ public:
 		char* p;
 		if (f)return ret;
 		if (fp == NULL) {
-			fp = fopen(filename.c_str(), "rb");
+			//fp = fopen(filename.c_str(), "rb");
+			fp = zengo_protra_open(filename.c_str(), "rb");
 			if(fp)fseek(fp, pos, SEEK_SET);
 		}
 		if (fp == NULL) {

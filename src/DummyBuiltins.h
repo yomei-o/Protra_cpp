@@ -38,14 +38,14 @@ public:
 		return Builtins::Invoke(name, args, at, ats);
 	}
 
-	static void Init(std::shared_ptr<Builtins> btin)
+	static std::shared_ptr<Protra::Lib::Lang::Builtins::Builtins> Init(std::shared_ptr<Builtins> btin)
 	{
 		std::vector<std::string> names;
 		names.push_back("Hello");
 		std::shared_ptr<Protra::Lib::Lang::Builtins::Builtins> tobtin;
 		tobtin = std::shared_ptr<Protra::Lib::Lang::Builtins::Builtins>(new DummyBuiltins());
 		btin->Regist(names, tobtin);
-
+		return tobtin;
 	}
 
 };
