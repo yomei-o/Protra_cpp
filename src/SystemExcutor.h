@@ -56,32 +56,16 @@ public:
 				RightIndex = prices.Count - 1,
 			};
 #endif
-
+			//TODO
 			//_interpreter.GlobalVariableTable.Clear();
 
 			if (prices == nullptr)continue;
 
-#if 0
-			printf("size=%d\n", prices->Count());
-			for (int j = 0; j < prices->Count(); j++) {
-				std::shared_ptr < Protra::Lib::Data::Price> p;
-				p = prices->Price(j);
-				printf("%04d-%02d-%02d  %d\n", p->Date.Year, p->Date.Month, p->Date.Day, p->Open);
-			}
-#endif
-			//TODO
-#if 1
-			//builtins.Index=j;
-			_interpreter->Execute();
-#endif
-#if 0
 			for (int j=0;j < prices->Count(); j++)
 			{
-				//builtins.Index=j;
-				//if (worker.CancellationPending)break;
+				bb->Index=j;
 				_interpreter->Execute();
 			}
-#endif
 		}
 	}
 

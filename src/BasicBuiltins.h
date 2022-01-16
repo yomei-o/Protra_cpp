@@ -36,6 +36,10 @@ public:
     int Index;
     int RightIndex;
 
+    std::map<std::string, std::shared_ptr<Protra::Lib::Data::PriceList> >_priceDataCache;
+    std::map<std::string, int> _indexAdjustmentCache;
+
+    /// <summary>
     BasicBuiltins()
     {
         Index = 0;
@@ -52,13 +56,68 @@ public:
         return _prices;
     }
 
-	virtual std::shared_ptr<Value>  Invoke(std::string& name, std::vector<std::shared_ptr<Value> >& args, int at, std::string& ats)override
-	{
-		//TODO
-		if (name == "Close") {
-			printf("OK\n");
-			return std::shared_ptr<Value>(new Value());
-		}
+    virtual std::shared_ptr<Value>  Invoke(std::string& name, std::vector<std::shared_ptr<Value> >& args, int at, std::string& ats)override
+    {
+        if (args.size() != 0) {
+            return Builtins::Invoke(name, args, at, ats);
+        }
+        std::shared_ptr<Protra::Lib::Data::PriceList>prices = _prices;
+        int index = Index;
+        int rightIndex = RightIndex;
+        std::shared_ptr< Protra::Lib::Data::Brand>brand = Brand;
+        if (ats != "")
+        {
+            //TODO
+        }
+        if (name == "Index") {
+            return std::shared_ptr<Value>(new Value(index + at));
+        }
+        else if (name == "RightIndex") {
+            return std::shared_ptr<Value>(new Value(rightIndex));
+        }
+        else if (name == "Code") {
+            return std::shared_ptr<Value>(new Value(brand->Code));
+        }
+        else if (name == "Market") {
+            return std::shared_ptr<Value>(new Value(brand->Market));
+        }
+        else if (name == "Unit") {
+            return std::shared_ptr<Value>(new Value(brand->Unit));
+        }
+        if (index + at < 0 || index + at >= prices->Count()) {
+            return std::shared_ptr<Value>(new Value());
+        }
+        std::shared_ptr< Protra::Lib::Data::Price>price;
+        price= prices->Price(index + at);
+        
+        if (name == "Year") {
+            return std::shared_ptr<Value>(new Value(price->Date.Year));
+        }
+        else if (name == "Month") {
+            return std::shared_ptr<Value>(new Value(price->Date.Month));
+        }
+        else if (name == "Day") {
+            return std::shared_ptr<Value>(new Value(price->Date.Day));
+        }
+        //TODO
+        //else if (name == "DayOfWeek") {
+        //    return std::shared_ptr<Value>(new Value((int)price->Date.DayOfWeek));
+        //}
+        else if (name == "Open") {
+            return std::shared_ptr<Value>(new Value(price->Open));
+        }
+        else if (name == "High") {
+            return std::shared_ptr<Value>(new Value(price->High));
+        }
+        else if (name == "Low") {
+            return std::shared_ptr<Value>(new Value(price->Low));
+        }
+        else if (name == "Close") {
+            return std::shared_ptr<Value>(new Value(price->Close));
+        }
+        else if (name == "Volume"){
+            return std::shared_ptr<Value>(new Value(price->Volume));
+        }
 		return Builtins::Invoke(name, args, at, ats);
 	}
 
