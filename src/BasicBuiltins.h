@@ -65,9 +65,39 @@ public:
         int index = Index;
         int rightIndex = RightIndex;
         std::shared_ptr< Protra::Lib::Data::Brand>brand = Brand;
+        if (prices == nullptr) {
+            throw std::runtime_error("BasicBuiltins prices is null");
+        }
+        if (Brand == nullptr) {
+            throw std::runtime_error("BasicBuiltins Brand is null");
+        }
         if (ats != "")
         {
-            //TODO
+            if (_priceDataCache[ats] != nullptr) {
+                    _priceDataCache[ats] = Protra::Lib::Data::PriceData::GetPrices(ats, prices->TimeFrame);
+            }
+            prices = _priceDataCache[ats];
+            if (prices == nullptr) {
+                return std::shared_ptr<Value>(new Value());
+            }
+            if (_indexAdjustmentCache.count(ats)!=0)
+            {
+                index = Index + _indexAdjustmentCache[ats];
+                if (index < 0 || index >= prices->Count() || prices->Price(index)->Date != _prices->Price(Index)->Date)
+                {
+                    _indexAdjustmentCache.erase(ats);
+                }
+            }
+            if (_indexAdjustmentCache.count(ats)==0)
+            {
+                index = prices->SearchByDate(_prices->Price(Index)->Date);
+                if (index < 0) {
+                    return std::shared_ptr<Value>(new Value());
+                }
+                _indexAdjustmentCache[ats] = index - Index;
+            }
+            rightIndex = RightIndex + index - Index;
+            brand = Protra::Lib::GlobalEnv::BrandData()->Brand(ats);
         }
         if (name == "Index") {
             return std::shared_ptr<Value>(new Value(index + at));
@@ -99,10 +129,9 @@ public:
         else if (name == "Day") {
             return std::shared_ptr<Value>(new Value(price->Date.Day));
         }
-        //TODO
-        //else if (name == "DayOfWeek") {
-        //    return std::shared_ptr<Value>(new Value((int)price->Date.DayOfWeek));
-        //}
+        else if (name == "DayOfWeek") {
+            return std::shared_ptr<Value>(new Value((int)price->Date.DayOfWeek));
+        }
         else if (name == "Open") {
             return std::shared_ptr<Value>(new Value(price->Open));
         }
@@ -124,9 +153,22 @@ public:
 	static std::shared_ptr<Protra::Lib::Lang::Builtins::Builtins> Init(std::shared_ptr<Builtins> btin)
 	{
 		std::vector<std::string> names;
-		names.push_back("Open");
-		names.push_back("Close");
-		std::shared_ptr<Protra::Lib::Lang::Builtins::Builtins> tobtin;
+        names.push_back("Index");
+        names.push_back("RightIndex");
+        names.push_back("Code");
+        names.push_back("Market");
+        names.push_back("Unit");
+        names.push_back("Year");
+        names.push_back("Month");
+        names.push_back("Day");
+        names.push_back("DayOfWeek");
+        names.push_back("Open");
+        names.push_back("High");
+        names.push_back("Low");
+        names.push_back("Close");
+        names.push_back("Volume");
+        
+        std::shared_ptr<Protra::Lib::Lang::Builtins::Builtins> tobtin;
 		tobtin = std::shared_ptr<Protra::Lib::Lang::Builtins::Builtins>(new BasicBuiltins());
 		btin->Regist(names, tobtin);
 		return tobtin;

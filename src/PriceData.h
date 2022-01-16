@@ -117,18 +117,16 @@ public:
         ret=_priceList->at(index);
         return ret;
     }
-    std::shared_ptr<class Price> SearchByDate(DateTime& date)
+    int SearchByDate(DateTime& date)
     {
-        std::shared_ptr<class Price> ret;
         int c;
         c = (int)_priceList->size();
         for (int i = 0; i < c; i++) {
             if (_priceList->at(i)->Date == date) {
-                ret = _priceList->at(i);
-                return ret;
+                return i;
             }
         }
-        return ret;
+        return -1;
     }
 };
 

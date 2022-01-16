@@ -40,12 +40,14 @@ public:
     int Month;
     int Day;
     int Value;
+    int DayOfWeek;
     DateTime() 
     {
         Year = 0;
         Month = 0;
         Day = 0;
         Value = 0;
+        DayOfWeek=0;
     }
     DateTime(int ik_)
     {
@@ -55,6 +57,7 @@ public:
         Year = 0;
         Month = 0;
         Day = 0;
+        DayOfWeek = 0;
         Value = ik_;
     
         if (ik_ == 0)return;
@@ -67,10 +70,12 @@ public:
         Year = tm->tm_year + 1900;
         Month = tm->tm_mon + 1;
         Day = tm->tm_mday;
+        DayOfWeek = tm->tm_wday;
     }
     DateTime(int y,int m,int d)
     {
         struct tm tm;
+        struct tm* ptm;
         time_t t;
         memset(&tm, 0, sizeof(tm));
         Year = y;
@@ -81,7 +86,8 @@ public:
         tm.tm_mday = d;
         t = timegm(&tm);
         Value = (int)(t / 86400)+UTC_OFFSET;
-
+        ptm = gmtime(&t);
+        DayOfWeek = ptm->tm_wday;
     }
     DateTime(const DateTime &d)
     {
@@ -89,6 +95,7 @@ public:
         Month = d.Month;
         Day = d.Day;
         Value = d.Value;
+        DayOfWeek = d.DayOfWeek;
     }
     DateTime& operator =(DateTime& d)
     {
@@ -96,6 +103,7 @@ public:
         Month = d.Month;
         Day = d.Day;
         Value = d.Value;
+        DayOfWeek = d.DayOfWeek;
         return *this;
     }
     bool operator ==(DateTime& d)
