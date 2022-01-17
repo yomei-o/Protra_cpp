@@ -74,7 +74,7 @@ public:
         }
         if (ats != "")
         {
-            if (_priceDataCache[ats] != nullptr) {
+            if (_priceDataCache[ats] == nullptr) {
                     _priceDataCache[ats] = Protra::Lib::Data::PriceData::GetPrices(ats, prices->TimeFrame);
             }
             prices = _priceDataCache[ats];

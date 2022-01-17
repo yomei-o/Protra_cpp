@@ -680,7 +680,7 @@ public:
 	{
 		std::shared_ptr<Value> r;
 
-		if (idx < 1) {
+		if (idx < 0) {
 			throw std::runtime_error(RuntimeException("assigned null for index"));
 		}
 		switch (ValueType) {

@@ -55,7 +55,7 @@ public:
     LogData(std::string system, int timeFrame)
     {
     }
-    bool Add(Log log)
+    bool Add(std::shared_ptr<Log> log)
     {
         return true;
     }

@@ -16,9 +16,13 @@ public:
 	std::shared_ptr<Protra::Lib::Lang::Interpreter> _interpreter;
 	std::shared_ptr < Protra::Lib::Config::BrandList> _brandList;
 	int _timeFrame;
+	int initialized;
+	int excuted;
 
 	SystemExcutor(std::string name, std::shared_ptr<Protra::Lib::Config::BrandList> bl,int timeFrame)
 	{
+		initialized = 0;
+		excuted = 0;
 		_name = name;
 		_brandList = bl;
 		_timeFrame = timeFrame;
@@ -26,7 +30,7 @@ public:
 		std::shared_ptr<Protra::Lib::Data::BrandData>& bd = Protra::Lib::GlobalEnv::BrandData();
 		bd=std::shared_ptr<Protra::Lib::Data::BrandData>(new Protra::Lib::Data::BrandData());
 		bd->Load();
-
+		initialized = 1;
 	}
 	void LoopBrandAndDate()
 	{
@@ -34,6 +38,7 @@ public:
 		logData = std::shared_ptr< Protra::Lib::Data::LogData>(new Protra::Lib::Data::LogData(_name, _timeFrame));
 
 		_interpreter = std::shared_ptr<Protra::Lib::Lang::Interpreter>(new Protra::Lib::Lang::Interpreter(_name));
+		if (_interpreter->initialized == 0)return;
 
 		int bl_sz = (int)_brandList->List->size();
 		for (int i = 0;  i < bl_sz; i++) {
@@ -56,9 +61,11 @@ public:
 			stin = Protra::Lib::Lang::Builtins::SimulateBuiltins::Init(_interpreter->_resource->Builtins);
 			sb = (Protra::Lib::Lang::Builtins::SimulateBuiltins*)(stin.get());
 
+			sb->Index = 0;
 			sb->BrandList = _brandList;
 			sb->System = _name;
 			sb->LogData = logData;
+			sb->Prices(prices);
 
 			_interpreter->GlobalVariableTable().clear();
 
@@ -67,9 +74,14 @@ public:
 			for (int j=0;j < prices->Count(); j++)
 			{
 				bb->Index=j;
+				sb->Index = j;
 				_interpreter->Execute();
+				if (_interpreter->executed == 0)break;
 			}
+			if (_interpreter->executed == 0)break;
 		}
+		if (_interpreter->executed == 0)return;
+		excuted = 1;
 	}
 
 };
