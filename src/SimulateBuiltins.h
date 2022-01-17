@@ -25,6 +25,7 @@
 #include "BrandData.h"
 #include "PriceData.h"
 #include "Global.h"
+#include "LogData.h"
 
 namespace Protra {
 namespace Lib {
@@ -33,9 +34,10 @@ namespace Builtins {
 
 class SimulateBuiltins:public Builtins{
 public:
-    SimulateBuiltins()
-    {
-    }
+    std::string System;
+    std::shared_ptr <Protra::Lib::Config::BrandList> BrandList;
+	std::shared_ptr<Protra::Lib::Data::LogData> LogData;
+
     virtual std::shared_ptr<Value>  Invoke(std::string& name, std::vector<std::shared_ptr<Value> >& args, int at, std::string& ats)override
     {
         return std::shared_ptr<Value>(new Value());

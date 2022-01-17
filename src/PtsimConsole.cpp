@@ -16,7 +16,7 @@ int main(int argc,char* argv[])
 		bl->List->push_back(argv[i]);
 	}
 	std::shared_ptr<SystemExcutor> mf;
-	mf = std::shared_ptr<SystemExcutor>(new SystemExcutor(argv[1],bl));
+	mf = std::shared_ptr<SystemExcutor>(new SystemExcutor(argv[1],bl,Protra::Lib::Data::TimeFrame::Daily));
 	mf->LoopBrandAndDate();
 
 	return 0;
