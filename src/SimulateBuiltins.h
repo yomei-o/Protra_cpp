@@ -150,8 +150,9 @@ public:
         }
         else if (name == "Sell") {
             log->Order = Protra::Lib::Data::Order::Sell;
-            if (!LogData->Add(log))
+            if (!LogData->Add(log)) {
                 throw std::runtime_error("“¯“ú‚Ì”„”ƒ‚ª‚ ‚è‚Ü‚·B");
+            }
             msg += "”„";
         }
         else {

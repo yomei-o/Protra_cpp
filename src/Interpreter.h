@@ -70,7 +70,8 @@ public:
 	}
     void Execute(int at,std::string& ats)
     {
-        if (initialized == 0) {
+		executed = 0;
+		if (initialized == 0) {
             printf("Interpreter is not initialized\n");
             return;
         }

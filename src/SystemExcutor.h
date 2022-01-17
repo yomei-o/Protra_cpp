@@ -39,6 +39,7 @@ public:
 
 		_interpreter = std::shared_ptr<Protra::Lib::Lang::Interpreter>(new Protra::Lib::Lang::Interpreter(_name));
 		if (_interpreter->initialized == 0)return;
+		if (_brandList->List->size() == 0)return;
 
 		int bl_sz = (int)_brandList->List->size();
 		for (int i = 0;  i < bl_sz; i++) {
@@ -81,6 +82,15 @@ public:
 			if (_interpreter->executed == 0)break;
 		}
 		if (_interpreter->executed == 0)return;
+
+#if 0
+		//TODO ‚±‚±‚É‘¹‰vŒvZ‚ğ“ü‚ê‚éB
+		std::vector<std::shared_ptr<Protra::Lib::Data::Log> >log;
+		log = logData->GetLog(_brandList->List->at(0));
+		for (int i = -0; i< log.size(); i++) {
+			printf("%s %d %d\n",log[i]->Date.toString().c_str(), log[i]->Order, log[i]->Price);
+		}
+#endif
 		excuted = 1;
 	}
 
