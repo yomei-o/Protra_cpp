@@ -82,7 +82,6 @@ inline FILE* zengo_protra_open(const char* file, const char* mode)
 {
 	FILE* ret = NULL;
 	int t = 0;
-	char buf[2028];
 
 	if (file == NULL || mode == NULL)return ret;
 	if (strlen(file) > 1000)return ret;

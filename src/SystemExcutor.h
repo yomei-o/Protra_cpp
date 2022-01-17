@@ -28,7 +28,7 @@ public:
 	{
 		_interpreter = std::shared_ptr<Protra::Lib::Lang::Interpreter>(new Protra::Lib::Lang::Interpreter(_name));
 
-		int bl_sz = _brandList->List->size();
+		int bl_sz = (int)_brandList->List->size();
 		for (int i = 0;  i < bl_sz; i++) {
 			std::shared_ptr< Protra::Lib::Lang::Builtins::Builtins> btin;
 			Protra::Lib::Lang::Builtins::BasicBuiltins* bb;
@@ -56,8 +56,7 @@ public:
 				RightIndex = prices.Count - 1,
 			};
 #endif
-			//TODO
-			//_interpreter.GlobalVariableTable.Clear();
+			_interpreter->GlobalVariableTable().clear();
 
 			if (prices == nullptr)continue;
 

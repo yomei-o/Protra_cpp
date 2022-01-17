@@ -1,4 +1,6 @@
 // Copyright (C) 2022 Yomei Otani <yomei.otani@gmail.com>
+// Copyright (C) 2008, 2013 panacoran <panacoran@users.sourceforge.jp>
+// Copyright (C) 2011 Daisuke Arai <darai@users.sourceforge.jp>
 // 
 // This program is part of Protra.
 //
@@ -39,7 +41,6 @@ public:
     std::map<std::string, std::shared_ptr<Protra::Lib::Data::PriceList> >_priceDataCache;
     std::map<std::string, int> _indexAdjustmentCache;
 
-    /// <summary>
     BasicBuiltins()
     {
         Index = 0;
