@@ -21,6 +21,7 @@
 #include <string>
 #include <algorithm>
 #include <vector>
+#include <map>
 #include <memory>
 #include "DateTime.h"
 
@@ -95,6 +96,7 @@ namespace PtSim
     {
     public:
         std::vector<std::shared_ptr<PricePair> >_sortedList;
+        std::map<std::string,std::shared_ptr<PricePair> >_sortedList2;
         int Count()
         {
             return (int)_sortedList.size();
@@ -103,15 +105,12 @@ namespace PtSim
         {
             value->Date = date;
             _sortedList.push_back(value);
+            _sortedList2[date.toString()]=value;
         }
         std::shared_ptr<PricePair> get(Protra::Lib::Data::DateTime& date)
         {
-            for (int i = 0; i < _sortedList.size(); i++) {
-                if (_sortedList[i]->Date == date) {
-                    return _sortedList[i];
-                }
-            }
             std::shared_ptr<PricePair> ret;
+            ret = _sortedList2[date.toString()];
             return ret;
         }
         std::shared_ptr<PricePairList> AccumulatedList()
