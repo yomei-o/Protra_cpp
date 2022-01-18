@@ -7,5 +7,5 @@
 //#include "PriceData.h"
 //#include "splitreplace.h"
 //#include "StreamReader.h"
-#include "zengoopen.h"
-
+//#include "zengoopen.h"
+#include "PricePairList.h"

@@ -9,6 +9,7 @@
 #include "BasicBuiltins.h"
 #include "SimulateBuiltins.h"
 #include "LogData.h"
+#include "Performance.h"
 
 class SystemExcutor {
 public:
@@ -83,6 +84,11 @@ public:
 		}
 		if (_interpreter->executed == 0)return;
 
+#if 1
+		{
+			PtSim::Performance a(_name,_brandList,_timeFrame);
+		}
+#endif
 #if 0
 		//TODO ‚±‚±‚É‘¹‰vŒvZ‚ğ“ü‚ê‚éB
 		std::vector<std::shared_ptr<Protra::Lib::Data::Log> >log;
