@@ -178,7 +178,7 @@ public:
 class BrandData
 {
 public:
-    std::map<std::string,std::shared_ptr<class Brand>> _data;
+    std::map<std::string,std::shared_ptr<class Brand> > _data;
     std::string _dataFile = "index.txt";
 
     void Load()

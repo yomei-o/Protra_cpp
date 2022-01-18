@@ -32,7 +32,7 @@ class BrandList
 {
 public:
     std::string Name;
-    std::shared_ptr<std::vector<std::string>> List;
+    std::shared_ptr<std::vector<std::string> > List;
 };
 
 }

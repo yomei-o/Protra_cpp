@@ -23,10 +23,13 @@
 #define UTC_OFFSET 719162
 
 #include<stdio.h>
+#include<string.h>
 #include<time.h>
 #include<string>
 
+#ifdef _WIN32
 #define timegm _mkgmtime
+#endif
 
 namespace Protra{
 namespace Lib {
@@ -97,7 +100,7 @@ public:
         Value = d.Value;
         DayOfWeek = d.DayOfWeek;
     }
-    DateTime& operator =(DateTime& d)
+    DateTime& operator =(DateTime d)
     {
         Year = d.Year;
         Month = d.Month;
