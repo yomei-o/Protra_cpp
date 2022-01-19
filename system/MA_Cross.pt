@@ -1,0 +1,62 @@
+# MA Cross.pt -- 10/40移動平均交差システム by Richard Donchian
+# Copyright 2013 panacoran <panacoran@users.sourceforge.jp>
+# This program is licensed under the GPL version 3 or later.
+#
+# MA(10)がMA(40)を上抜いたらentry、下抜いたらexit。-10%の逆指値でexit。
+# ただし、終値50円以下、出来高1000万円以下の場合はentryしない。
+# 価格は翌日の寄り付きか当日の終値。買い数量は約100万円。
+
+require "TIlib"
+
+def Num(price)
+	unit = Unit2(price)
+	return (1000000 / (unit * price)) * unit
+end
+
+if !$__INIT__
+	# TIlibのオブジェクトを生成する。
+	$MA_fast = MA_new(10)
+	$MA_slow = MA_new(40)
+	$Cross = Crossover_new(0, 0.0)
+	$__INIT__ = 1
+else
+	MA_next($MA_fast)
+	MA_next($MA_slow)
+end
+
+ma_fast = MA_value($MA_fast)
+ma_slow = MA_value($MA_slow)
+price = {+1}Open
+if !price
+	price = Close
+end
+
+if ma_fast == null || ma_slow == null || !price
+	# 指標の計算に必要な日数を経過していない場合は何もしない。
+	return
+end
+cross = Crossover_next($Cross, ma_fast, ma_slow)
+# entryの条件を判定する。
+if !$long && cross > 0 && Close > 50 && Volume * Close > 10000
+	$long = Num(price)
+	if $long == 0
+		# 100万円で買えないなら何もしない。
+		return
+	end
+	Buy(price, $long)
+	$loss_cut = Yobine(price * 0.90)
+elsif $long
+	if Low && Low <= $loss_cut
+		# 逆指値でexitする。
+		Sell(Min($loss_cut, Open), $long)
+		$long = 0
+	elsif cross < 0
+		# exitする。
+		Sell(price, $long)
+		$long = 0
+	end
+end
+
+# Local Variables:
+# tab-width: 4
+# End:

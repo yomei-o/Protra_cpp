@@ -1,0 +1,109 @@
+# loop-type: date-only
+# MA Cross with CAP.pt -- 10/40移動平均交差システム 予算上限付き
+# Copyright 2013 panacoran <panacoran@users.sourceforge.jp>
+# This program is licensed under the GPL version 3 or later.
+# 
+# MA(10)がMA(40)を上抜いたらentry、下抜いたらexit。-10%の逆指値でexit。
+# 終値50円以下、出来高1000万円以下の場合はentryしない。
+# 投資総額が1000万円を超える場合はentryしない。
+# 価格は翌日の寄り付きか当日の終値。買い数量は約100万円。
+
+require "TIlib"
+
+def Num(price)
+	unit = Unit2(price)
+	return (1000000 / (unit * price)) * unit
+end
+
+codes = CodeList
+# 銘柄数が違う場合には銘柄リストが異なっているのでエラーにする。
+if $code_num && $code_num != Length(codes)
+	Print("前回と異なる銘柄リストでは実行できません。")
+	Dummy
+end
+$code_num = Length(codes)
+
+if !$__INIT__
+	$budget = 10000000	# 投資総額
+	# 銘柄の数だけグローバル変数を用意する。
+	$MA_fast = [$code_num]
+	$MA_slow = [$code_num]
+	$Cross = [$code_num]
+	$long = [$code_num]
+	$loss_cut = [$code_num]
+	$__INIT__ = 1
+end
+
+# 文字列型のat作用素を全体に反映させるためにシステムを関数にする。
+def Main(i)
+	# まだ上場していない銘柄は株価データがないためnullが返る。
+	if Index == null #まだ上場していない場合
+		return
+	end
+	if !$MA_fast[i]
+		# TIlibのオブジェクトを生成する。
+		$MA_fast[i] = MA_new(10)
+		$MA_slow[i] = MA_new(40)
+		$Cross[i] = Crossover_new(0, 0.0)
+		# 銘柄ごとのグローバル変数を初期化する。
+		$long[i] = 0
+		$loss_cut[i] = 0
+		return
+	end
+	# 指標の計算を一日進める。
+	MA_next($MA_fast[i])
+	MA_next($MA_slow[i])
+	ma_fast = MA_value($MA_fast[i])
+	ma_slow = MA_value($MA_slow[i])
+	price = {+1}Open
+	if !price
+		price = Close
+	end
+	# 指標の計算に必要な日数を経過していない場合は何もしない。
+	if ma_fast == null || ma_slow == null || !price
+		return
+	end
+	cross = Crossover_next($Cross[i], ma_fast, ma_slow)
+	# entryの条件を判定する。
+	if (!$long[i] && cross > 0 && Close > 50 && Volume * Close > 10000)
+		long = Num(price)
+		if long == 0
+			# 100万円で買えないなら何もしない。
+			return
+		end
+		# 予算を超えない場合だけ買う。
+		if long * price <= $budget
+			$budget = $budget - long * price
+			$long[i] = long
+			Buy(price, long)
+			$loss_cut[i] = Yobine(price * 0.90)
+		else
+			PrintLog("予算を超過しています。")
+		end
+	elsif $long[i]
+		sell = 0
+		if Low > 0 && Low <= $loss_cut[i]
+			# 逆指値でexitする。
+			sell = Min($loss_cut[i], Open)
+		elsif cross < 0
+			# exitする。
+			sell = price
+		end
+		if sell != 0
+			# exitの条件を満たしている場合。
+			Sell(sell, $long[i])
+			$budget = $budget + sell * $long[i]
+			$long[i] = 0
+		end
+	end
+end
+
+i = -1
+while i + 1 < $code_num
+	i = i + 1
+	{codes[i]}Main(i) #文字列型at作用素を与えて実行する。
+end
+
+# Local Variables:
+# tab-width: 4
+# End:

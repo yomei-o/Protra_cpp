@@ -1,0 +1,140 @@
+#**************************************************************
+#		RSI SYSTEM.pt
+#**************************************************************
+#
+#	RSIを利用した逆張りのシステムです。
+#
+#
+#	このシステムのルール
+#
+#	買い条件
+#		
+#		・14日間のRSIが18.5を下回る
+#		・終値が50円以上
+#		・出来高が10万株以上
+#		このすべてを満たしたとき、約100万円分を終値で買う。
+#		このRSIの数字の根拠はLDSとほぼ同数のトレード数を目指し
+#		テストを繰り返したところ、この値になりました。
+#		また、(東証一部の)9400～9999に対してはよいパフォーマンスを
+#		示さないようで、対象から外しています。
+#
+#
+#	売り条件
+#		・(買いから10営業日以内は)終値が9日間の最高値更新で売り
+#		・(買いから10営業日以降は)終値が移動平均+σを上回ったら売り
+#		・終値が買値の75%を下回ったら売り
+#
+#	また、売りを出した後10日間は買いのサインを出しません。
+#
+#
+#**************************************************************
+#	Composed by M.Ishiguro,		2004/01/09
+#**************************************************************
+
+
+require "TIlib"
+
+
+# BollingerBandsオブジェクトが無ければ生成を、あれば更新を行います
+if ! $BB
+	$BB = BB_new(20)
+else
+	BB_next($BB)
+end
+
+
+# RSIオブジェクトが無ければ生成を、あれば更新を行います
+if ! $RSI
+	$RSI = RSI_new(14, 1)
+else
+	RSI_next($RSI)
+end
+
+
+# n日間の最高値を返します
+def Highest(n)
+	if ! {-n}Close
+		return
+	end
+	i = 0; max = Close
+	while i < n
+		max = Max(max, {-i}Close)
+		i = i + 1
+	end
+	return max
+end
+
+
+# 買い条件を定義します
+def Cond1
+	if ! Close
+		return
+	end
+	rsi_value = RSI_value($RSI)
+	if ! rsi_value
+		return
+	end
+	return rsi_value < 18.5 && Close >= 50 && Volume >= 100
+end
+
+
+# 売り条件を定義します
+def Cond2
+	if ! Close
+		return
+	end
+	if $set < 0
+		ma = BB_value($BB)
+		sigma = BB_deviation($BB)
+		if ma && sigma
+			if Close > ma + sigma
+				return 1
+			end
+		end
+	else
+		high = Highest(9)
+		if high
+			if Close >= high
+				return 1
+			end
+		end
+	end
+	$set = $set - 1
+	return Close < 0.75*$buy
+end
+
+
+# 買う株数を返します
+def Num(price)
+	unit = Unit2(price)
+	return (1000000 / (unit * price)) * unit
+end
+
+
+#*
+# この部分では実際に売買を行います。
+# 
+# $setは買いが起こると生成され、初期値は10です。
+# この$setは売り条件(Cond2)を一回実行すると値がディクリメントされていきます。
+# よってCond2内では10日以内では$set>0の条件が、それ以降では$set<0の条件が実行されます。
+# 
+# また$waitは売りが起こると生成され、初期値は10です。
+# 売買を行おうとしたときに、$waitがあるとそれをディクリメントし売買は行われず、なければ売買に移ります。
+# よって売買を行った後10日間は$waitが正の値を持っているので売買は実行されませんが、
+# $waitが0となった後は売買をするように移行していきます。
+#
+
+if ! $wait
+	if ! $hold && Cond1
+		$hold = Num(Close)
+		$buy = Close
+		Buy(Close, $hold)
+		$set = 10
+	elsif $hold && Cond2
+		Sell(Close, $hold)
+		$hold = 0
+		$wait = 10
+	end
+else
+	$wait = $wait - 1
+end

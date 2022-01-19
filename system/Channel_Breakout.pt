@@ -1,0 +1,35 @@
+# Channel Breakout.pt -- 20day Channel Breakout System by Richard Donchian
+# 過去20日の高値の逆指値でentry、安値の逆指値でexit。
+# ただし、終値50円以下、出来高1000万円以下の場合はentryしない。
+# 買い数量は約100万円。
+# written by panacoran <panacoran@users.sourceforge.jp>
+
+require "TIlib"
+
+def Num(price)
+	unit = Unit2(price)
+	return (1000000 / (unit * price)) * unit
+end
+
+if !$O
+	$O = {-1}HighLow_new(20)
+else
+	HighLow_next($O)
+end
+
+if HighLow_high($O) != null
+	if !$long && High >= HighLow_high($O) && Close > 50 && Volume * Close > 10000
+		price = Max(HighLow_high($O), Open)
+		$long = Num(price)
+		Buy(price, $long)
+	end
+	if Low <= HighLow_low($O) && $long
+		price = Min(HighLow_low($O), Open)
+		Sell(price, $long)
+		$long = 0
+	end
+end
+
+# Local Variables:
+# tab-width: 4
+# End:

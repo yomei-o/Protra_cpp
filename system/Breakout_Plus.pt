@@ -1,0 +1,106 @@
+# Brekout Plus -- 20日ブレークアウトシステム
+# Copyright 2013 panacoran <panacoran@users.sourceforge.jp>
+# This program is licensed under the GPL version 3 or later.
+#
+# 直近55日間の高値を上抜いたらentry、下抜いたらexitする。
+# 価格は翌日の寄り付きか当日の終値。買い数量は約100万円。
+# +5%でポジションを追加する。
+# -10%で直近のポジションをロスカットする。
+
+require "TIlib"
+
+def Num(price)
+	unit = Unit2(price)
+	return (1000000 / (unit * price)) * unit
+end
+
+def CheckEntry
+	return Close > 50 && Volume * Close > 10000
+end
+
+position_max = 10
+
+if !$HL
+	$HL = {-1}HighLow_new(20)
+	$index = 0
+	$prices = [position_max]
+	$nums = [position_max]
+	$prev_price = 10000000
+else
+	HighLow_next($HL)
+end
+
+high = HighLow_high($HL)
+low = HighLow_low($HL)
+if !high || !low
+	return
+end
+
+price = {+1}Open
+if !price
+	price = Close
+end
+num = Num(price)
+
+sell = 0
+i = 0
+while i < $index
+	if Low && Low < $prices[i] * 0.9
+		sell = sell + $nums[i]
+		$prices[i] = 0
+		$nums[i] = 0
+	end
+	i = i + 1
+end
+
+if $index > 0 && Low && Low < low
+	i = 0
+	while i < $index
+		if $nums[i] != 0
+			sell = sell + $nums[i]
+			$prices[i] = 0
+			$nums[i] = 0
+		end
+		i = i + 1
+	end
+	$index = 0
+	$prev_price = 10000000
+end
+
+if sell
+	Sell(price, sell)
+	return
+end
+
+if High > $prev_price * 1.05
+	$prev_price = price
+	if !CheckEntry
+		return
+	end
+	i = 0
+	while i < $index
+		if $nums[i] == 0
+			break
+		end
+		i = i + 1
+	end
+	if i == $index
+		if $index == position_max
+			return
+		end
+		i = $index
+		$index = $index + 1
+	end
+	$nums[i] = num
+	$prices[i] = price
+	Buy(price, num)
+	return
+end
+
+if $index == 0 && High > high && CheckEntry
+	$prices[0] = $prev_price = price
+	$nums[0] = num
+	$index = 1
+	Buy(price, num)
+	return
+end
