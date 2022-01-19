@@ -27,6 +27,7 @@
 #include "LogData.h"
 #include "PricePairList.h"
 #include "PriceData.h"
+#include "formatNumber.h"
 
 namespace PtSim
 {
@@ -255,7 +256,10 @@ public:
 				}
 				EvaluateTrade(log->Order == Protra::Lib::Data::Order::Sell, (log->Date.Value - startDate.Value), realTotalBuy, realTotalSell);
 			}
-        }
+			if (position != 0) {
+				_runningTrades++;
+			}
+		}
 		std::shared_ptr<PricePairList> realPositionValues = positionValues->BookAccumulatedList();
         CalcMaxPosition(realPositionValues);
         std::shared_ptr<PricePairList> realProfits = profits->AccumulatedList();
@@ -288,61 +292,30 @@ public:
 		printf("勝ちトレード最大利率\t%.2f%%\n", _winMaxProfitRatio * 100);
 		printf("負けトレード最大損率\t%.2f%%\n", _loseMaxLossRatio * 100);
 		printf("\n");
-//			"全トレード平均期間\t{15:n}\n" +
-//			"勝ちトレード平均期間\t{16:n}\n" +
-//			"負けトレード平均期間\t{17:n}\n" +
-//			"----------------------------------------\n" +
-
-#if 0
-
-			"全トレード平均期間\t{15:n}\n"
-			"勝ちトレード平均期間\t{16:n}\n"
-			"負けトレード平均期間\t{17:n}\n"
-			"----------------------------------------\n"
-		"勝ちトレード数(勝率)\t{6:d}({7:p})\n"
-			"負けトレード数(負率)\t{8:d}({9:p})\n"
-			"\n"
-			"全トレード平均利率\t{10:p}\n"
-			"勝ちトレード平均利率\t{11:p}\n"
-			"負けトレード平均損率\t{12:p}\n"
-			"\n"
-			"勝ちトレード最大利率\t{13:p}\n"
-			"負けトレード最大損率\t{14:p}\n"
-			"\n"
-			"全トレード平均期間\t{15:n}\n"
-			"勝ちトレード平均期間\t{16:n}\n"
-			"負けトレード平均期間\t{17:n}\n"
-			"----------------------------------------\n"
-			"必要資金\t\t{18:c}\n"
-			"最大ポジション(簿価)\t{19:c}\n"
-			"最大ポジション(時価)\t{20:c}\n"
-			"\n"
-			"純利益\t\t\t{21:c}\n"
-			"勝ちトレード総利益\t\t{22:c}\n"
-			"負けトレード総損失\t\t{23:c}\n"
-			"\n"
-			"全トレード平均利益\t{24:c}\n"
-			"勝ちトレード平均利益\t{25:c}\n"
-			"負けトレード平均損失\t{26:c}\n"
-			"\n"
-			"勝ちトレード最大利益\t{27:c}\n"
-			"負けトレード最大損失\t{28:c}\n"
-			"\n"
-			"プロフィットファクター\t\t{29:n}\n"
-			"最大ドローダウン(簿価)\t{30:c}\n"
-			"最大ドローダウン(時価)\t{31:c}\n"
-			"----------------------------------------\n"
-			"現在進行中のトレード数\t{32:d}\n",
-			
-			_allTerm / _allTrades, _winTerm / _winTrades, loseTerm / loseTrades,
-			_budget, _bookMaxPosition, _marketMaxPosition,
-			_totalProfit, _winTotalProfit, loseTotalLoss,
-			_totalProfit / _allTrades, _winTotalProfit / _winTrades, loseTotalLoss / loseTrades,
-			_winMaxProfit, _loseMaxLoss,
-			_winTotalProfit / -loseTotalLoss,
-			_bookMaxDrowDown, _marketMaxDrowDown,
-			_runningTrades));
-#endif
+		printf("全トレード平均期間\t%.2f\n", _allTerm / _allTrades);
+		printf("勝ちトレード平均期間\t%.2f\n", _winTerm / _winTrades);
+		printf("負けトレード平均期間\t%.2f\n", loseTerm / loseTrades);
+		printf("----------------------------------------\n");
+		printf("必要資金\t\t%s\n", yenFormatNumber((int)_budget).c_str());
+		printf("最大ポジション(簿価)\t%s\n", yenFormatNumber((int)_bookMaxPosition).c_str());
+		printf("最大ポジション(時価)\t%s\n", yenFormatNumber((int)_marketMaxPosition).c_str());
+		printf("\n");
+		printf("純利益\t\t\t%s\n", yenFormatNumber((int)(_totalProfit)).c_str());
+		printf("勝ちトレード総利益\t\t%s\n", yenFormatNumber((int)(_winTotalProfit)).c_str());
+		printf("負けトレード総損失\t\t%s\n", yenFormatNumber((int)(loseTotalLoss)).c_str());
+		printf("\n");
+		printf("全トレード平均利益\t%s\n", yenFormatNumber((int)(_totalProfit / _allTrades)).c_str());
+		printf("勝ちトレード平均利益\t%s\n", yenFormatNumber((int)(_winTotalProfit / _winTrades)).c_str());
+		printf("負けトレード平均損失\t%s\n", yenFormatNumber((int)(loseTotalLoss / loseTrades)).c_str());
+		printf("\n");
+		printf("勝ちトレード最大利益\t%s\n", yenFormatNumber((int)(_winMaxProfit)).c_str());
+		printf("負けトレード最大損失\t%s\n", yenFormatNumber((int)(_loseMaxLoss)).c_str());
+		printf("\n");
+		printf("プロフィットファクター\t\t%.2f\n", _winTotalProfit / -loseTotalLoss);
+		printf("最大ドローダウン(簿価)\t%s\n", yenFormatNumber((int)(_bookMaxDrowDown)).c_str());
+		printf("最大ドローダウン(時価)\t%s\n", yenFormatNumber((int)(_marketMaxDrowDown)).c_str());
+		printf("----------------------------------------\n");
+		printf("現在進行中のトレード数\t%d\n", _runningTrades);
 	}
 
 };

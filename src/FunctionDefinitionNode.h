@@ -134,12 +134,13 @@ public:
 	{
 		// 関数テーブルに登録
 		std::shared_ptr<FunctionType> ft= std::shared_ptr<FunctionType>(new FunctionType(_name, (int)Arguments.size()));
-		if (resource.FunctionTable[_name] != nullptr) {
+		std::string nm = ft->toString();
+		if (resource.FunctionTable[nm] != nullptr) {
 			//throw new RuntimeException("function is already defined --- " + ft, Token);
 			throw std::runtime_error(ParseException("function is already defined --- ",Token));
 		}
-		resource.FunctionTypeTable[_name] = ft;
-		resource.FunctionTable[_name] = that;
+		resource.FunctionTypeTable[nm] = ft;
+		resource.FunctionTable[nm] = that;
 
 		return Result::Normal;
 	}

@@ -21,6 +21,9 @@
 #define DF_LOGDATA_H_
 
 #include <algorithm>
+#include <vector>
+#include <map>
+#include <memory>
 #include "DateTime.h"
 
 namespace Protra {

@@ -62,6 +62,13 @@ public:
 	{
 		return _num;
 	}
+	std::string toString() {
+		std::string ret;
+		ret = _name;
+		ret += "@";
+		ret += std::to_string(_num);
+		return ret;
+	}
 };
 
 

@@ -81,10 +81,10 @@ public:
     std::shared_ptr<Value> Evaluate(std::shared_ptr<ExpressionNode>& that, Resource& resource, int at, std::string& ats)override
     {
 		// 関数が定義されていれば実行する
-		if (resource.FunctionTable[_functionType->Name()] != nullptr)
+		if (resource.FunctionTable[_functionType->toString()] != nullptr)
 		{
 			// 関数定義ノードの取得
-			std::shared_ptr<ExecutableNode> fdn = resource.FunctionTable[_functionType->Name()];
+			std::shared_ptr<ExecutableNode> fdn = resource.FunctionTable[_functionType->toString()];
 
 			// 記号表を用意
 			std::map<std::string, std::shared_ptr<Value> >* variables=new std::map<std::string, std::shared_ptr<Value> >;
