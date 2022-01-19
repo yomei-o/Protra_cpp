@@ -109,9 +109,18 @@ namespace PtSim
         }
         std::shared_ptr<PricePair> get(Protra::Lib::Data::DateTime& date)
         {
+			std::string str =date.toString();
             std::shared_ptr<PricePair> ret;
-            ret = _sortedList2[date.toString()];
-            return ret;
+
+            ret = _sortedList2[str];
+			if (ret == nullptr) {
+				std::shared_ptr<PricePair> tmp = std::shared_ptr<PricePair>(new PricePair());
+				tmp->Date = date;
+				_sortedList2[str] = tmp;
+				_sortedList.push_back(tmp);
+				ret = tmp;
+			}
+			return ret;
         }
         std::shared_ptr<PricePairList> AccumulatedList()
         {

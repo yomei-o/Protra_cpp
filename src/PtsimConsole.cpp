@@ -10,7 +10,7 @@ int main(int argc,char* argv[])
 	std::shared_ptr<Protra::Lib::Config::BrandList> bl;
 	bl = std::shared_ptr<Protra::Lib::Config::BrandList>(new (Protra::Lib::Config::BrandList));
 	bl->Name = "test";
-	bl->List = std::shared_ptr <std::vector<std::string>>(new std::vector<std::string>);
+	bl->List = std::shared_ptr <std::vector<std::string> >(new std::vector<std::string>);
 	//bl->List->push_back("1378");
 	for (int i = 2; i < argc; i++) {
 		bl->List->push_back(argv[i]);

@@ -1,4 +1,4 @@
-// Copyright (C) 2022 Yomei Otani <yomei.otani@gmail.com>
+ï»¿// Copyright (C) 2022 Yomei Otani <yomei.otani@gmail.com>
 // Copyright (C) 2008, 2013 panacoran <panacoran@users.sourceforge.jp>
 // Copyright (C) 2011 Daisuke Arai <darai@users.sourceforge.jp>
 // 
@@ -137,23 +137,23 @@ public:
         msg += tmp;
         msg += " ";
 
-        sprintf(tmp,"%d‰~ %dŠ”",log->Price, log->Quantity);
+        sprintf(tmp,"%då†† %dæ ª",log->Price, log->Quantity);
         msg += tmp;
         msg += " ";
 
         if (name == "Buy") {
             log->Order = Protra::Lib::Data::Order::Buy;
             if (!LogData->Add(log)) {
-                throw std::runtime_error("“¯“ú‚Ì”„”ƒ‚ª‚ ‚è‚Ü‚·B");
+                throw std::runtime_error("åŒæ—¥ã®å£²è²·ãŒã‚ã‚Šã¾ã™ã€‚");
             }
-            msg += "”ƒ";
+            msg += "è²·";
         }
         else if (name == "Sell") {
             log->Order = Protra::Lib::Data::Order::Sell;
             if (!LogData->Add(log)) {
-                throw std::runtime_error("“¯“ú‚Ì”„”ƒ‚ª‚ ‚è‚Ü‚·B");
+                throw std::runtime_error("åŒæ—¥ã®å£²è²·ãŒã‚ã‚Šã¾ã™ã€‚");
             }
-            msg += "”„";
+            msg += "å£²";
         }
         else {
             return Builtins::Invoke(name, args, at, ats);

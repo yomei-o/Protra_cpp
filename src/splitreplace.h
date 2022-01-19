@@ -69,5 +69,12 @@ inline std::string replaceOtherStr(std::string& replacedStr, std::string from, s
 
     return replacedStr.replace(pos, len, to);
 }
+
+
+inline double sign(double A) {
+	return (A>0) - (A<0);
+}
+
+
 #endif
 

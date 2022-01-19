@@ -84,19 +84,10 @@ public:
 		}
 		if (_interpreter->executed == 0)return;
 
-#if 1
 		{
 			PtSim::Performance a(_name,_brandList,_timeFrame);
+			a.Calculate(logData);
 		}
-#endif
-#if 0
-		//TODO ‚±‚±‚É‘¹‰vŒvZ‚ğ“ü‚ê‚éB
-		std::vector<std::shared_ptr<Protra::Lib::Data::Log> >log;
-		log = logData->GetLog(_brandList->List->at(0));
-		for (int i = -0; i< log.size(); i++) {
-			printf("%s %d %d\n",log[i]->Date.toString().c_str(), log[i]->Order, log[i]->Price);
-		}
-#endif
 		excuted = 1;
 	}
 
