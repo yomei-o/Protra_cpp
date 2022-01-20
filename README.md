@@ -5,7 +5,7 @@ Protra言語のC++実装です。
 C++の標準テンプレートと標準ライブラリのみで実装しているので、Windows,Machintosh,Linuxなどあらゆる環境で動作します。  
   
   
-# How To Use
+## How To Use
 使い方  
 プログラムの先頭で、#include "Protra.h"をしてください。  
   
@@ -31,7 +31,7 @@ int main(int argc,char* argv[])
 	return 0;  
 }  
   
-# コンパイルと実行方法
+## コンパイルと実行方法
 >g++ -o ProtraLang ProtraLang.cpp  
 コマンドラインから上記のコマンドを入力することでProtra言語のインタープリタをビルドすることができます。  
   
@@ -44,7 +44,7 @@ int main(int argc,char* argv[])
 コンソールで動くようにしました。
 
 
-# コンパイルと実行方法
+## コンパイルと実行方法
 >g++ -o PtsimConsole PtsimCionsole.cpp  
 コマンドラインから上記のコマンドを入力することでPtSimのコンソール版をビルドすることができます。  
   
