@@ -54,6 +54,10 @@ int main(int argc,char* argv[])
 			(* option.get())["-o"]=argv[i + 1];
 			i++;
 		}
+		else if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) {
+			(*option.get())["-p"] = argv[i + 1];
+			i++;
+		}
 		else {
 			if (system_name == "") {
 				system_name = argv[i];
@@ -67,6 +71,7 @@ int main(int argc,char* argv[])
 		printf("\n");
 		printf("-h --help                オプションの表示\n");
 		printf("-o [filename]            取引データのファイルへの出力\n");
+		printf("-p [filename]            利益データのファイルへの出力\n");
 		return 0;
 	}
 	if (bl->Name == "")bl->Name = "noname";

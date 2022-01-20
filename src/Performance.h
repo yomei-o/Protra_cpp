@@ -28,6 +28,8 @@
 #include "PricePairList.h"
 #include "PriceData.h"
 #include "formatNumber.h"
+#include "hookprintf.h"
+#include "zengoopen.h"
 
 namespace PtSim
 {
@@ -139,7 +141,7 @@ public:
 		_bookMaxDrowDown = maxDrowdown.Book;
 	}
 
-	std::shared_ptr<PricePairList> Calculate(std::shared_ptr< Protra::Lib::Data::LogData> logData)
+	std::shared_ptr<PricePairList> Calculate(std::shared_ptr< Protra::Lib::Data::LogData> logData,std::string fn)
 	{
 		std::shared_ptr<PricePairList> profits = AnalyzeLogs(logData);
 		if (profits->Count() == 0) {
@@ -148,6 +150,18 @@ public:
 		_firstTrade = profits->_sortedList[0]->Date;
 		_lastTrade = profits->_sortedList[profits->_sortedList.size() - 1]->Date;
 		PrintResult();
+		if (fn != "") {
+			std::string msg;
+			hookprintf::config::start(hookprintf::HOOK);
+			PrintResult();
+			msg = hookprintf::config::get_buf();
+			hookprintf::config::start(hookprintf::NORMAL);
+			FILE* fp = zengo_open(fn.c_str(), "wt", "data");
+			if (fp) {
+				fprintf(fp,"%s", msg.c_str());
+				fclose(fp);
+			}
+		}
 		return profits;
 	}
 	std::shared_ptr<PricePairList> AnalyzeLogs(std::shared_ptr< Protra::Lib::Data::LogData> logData)
