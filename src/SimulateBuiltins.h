@@ -123,6 +123,7 @@ public:
         log->Code = brand->Code;
         log->Price = args[0]->toInt();
         log->Quantity = args[1]->toInt();
+        log->Name = brand->Name;
         //TODO
         msg = "";
         msg += brand->Code;

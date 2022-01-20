@@ -40,6 +40,7 @@ class Log
 {
 public:
     std::string Code;
+    std::string Name;
     DateTime Date;
     int Price;
     int Quantity;

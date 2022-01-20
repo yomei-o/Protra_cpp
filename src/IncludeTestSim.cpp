@@ -11,6 +11,7 @@
 //#include "PricePairList.h"
 //#include "LogData.h"
 //#include "Performance.h"
-#include "formatNumber.h"
+//#include "formatNumber.h"
+#include "DataWriter.h"
 
 

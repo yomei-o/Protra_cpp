@@ -1,3 +1,23 @@
+// Copyright (C) 2022 Yomei Otani <yomei.otani@gmail.com>
+// Copyright (C) 2008, 2013 panacoran <panacoran@users.sourceforge.jp>
+// Copyright (C) 2011 Daisuke Arai <darai@users.sourceforge.jp>
+// 
+// This program is part of Protra.
+//
+// Protra is free software: you can redistribute it and/or modify it
+// under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program; if not, see <http://www.gnu.org/licenses/>.
+// 
+
 #ifndef DF_SYSTEMEXECUTOR_H_
 #define DF_SYSTEMEXECUTOR_H_
 
@@ -10,6 +30,7 @@
 #include "SimulateBuiltins.h"
 #include "LogData.h"
 #include "Performance.h"
+#include "DataWriter.h"
 
 class SystemExcutor {
 public:
@@ -33,7 +54,7 @@ public:
 		bd->Load();
 		initialized = 1;
 	}
-	void LoopBrandAndDate()
+	void LoopBrandAndDate(std::shared_ptr<std::map<std::string,std::string> > option)
 	{
 		std::shared_ptr< Protra::Lib::Data::LogData> logData;
 		logData = std::shared_ptr< Protra::Lib::Data::LogData>(new Protra::Lib::Data::LogData(_name, _timeFrame));
@@ -87,6 +108,9 @@ public:
 		{
 			PtSim::Performance a(_name,_brandList,_timeFrame);
 			a.Calculate(logData);
+		}
+		if (option->count("-o") != 0) {
+			Protra::Lib::Data::DataWriter::WriteLog(option->at("-o"), _brandList, logData);
 		}
 		excuted = 1;
 	}
