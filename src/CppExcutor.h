@@ -86,7 +86,7 @@ public:
 			excuted = 1;
 		}
 		catch (...) {
-
+			printf("performance runtime error  \n");
 		}
 
 	}

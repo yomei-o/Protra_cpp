@@ -74,7 +74,7 @@ int main(int argc,char* argv[])
 		}
 	}
 	if (flag_help || system_name=="" || bl->List->size()<1) {
-		printf("PtSimConsoke [option ...] file.pt Code1 [Code2 ...] \n");
+		printf("PtSimConsole [option ...] file.pt Code1 [Code2 ...] \n");
 		printf("\n");
 		printf("-h --help                オプションの表示\n");
 		printf("-o [filename]            取引データのファイルへの出力\n");
@@ -86,8 +86,15 @@ int main(int argc,char* argv[])
 	if (bl->Name == "")bl->Name = "noname";
 	std::shared_ptr<SystemExcutor> mf;
 	mf = std::shared_ptr<SystemExcutor>(new SystemExcutor(system_name,bl,Protra::Lib::Data::TimeFrame::Daily));
+	if (mf->initialized == 0) {
+		printf("PtSimConsole initialize error\n");
+		return 1;
+	}
 	mf->LoopBrandAndDate(option);
-
+	if (mf->excuted == 0) {
+		printf("PtSimConsole excute error\n");
+		return 1;
+	}
 	return 0;
 }
 

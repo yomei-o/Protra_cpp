@@ -27,7 +27,11 @@ int main(int argc,char* argv[])
 
 	std::shared_ptr<CppExcutor> cex;
 	cex = std::shared_ptr<CppExcutor>(new CppExcutor("sample"));
-	
+	if (cex->initialized == 0) {
+		printf("initialize error\n");
+		return 1;
+	}
+
 	cex->AddLog(2001, 1, 12, "1378", "hoge", 1200, 100, 0);
 	cex->AddLog(2001, 3, 12, "1378", "hoge", 1300, 100, 1);
 	cex->AddLog(2001, 4, 3, "1378", "hoge", 1200, 100, 0);
@@ -39,6 +43,10 @@ int main(int argc,char* argv[])
 	option->insert({{"savetradingcsv","tading.csv"}});
 
 	cex->Performance(option);
+	if (cex->excuted == 0) {
+		printf("excute error\n");
+		return 1;
+	}
 
 	return 0;
 }
