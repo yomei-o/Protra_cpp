@@ -18,6 +18,9 @@
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 // 
 // $Id$
+#ifndef DF_PRICEPAIRLIST_H_
+#define DF_PRICEPAIRLIST_H_
+
 #include <string>
 #include <algorithm>
 #include <vector>
@@ -159,3 +162,6 @@ namespace PtSim
     };
 
 }
+
+#endif
+

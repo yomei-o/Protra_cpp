@@ -23,6 +23,7 @@
 #include <string>
 #include "LogData.h"
 #include "BrandListConfig.h"
+#include "PricePairList.h"
 #include "zengoopen.h"
 
 namespace Protra {
@@ -48,7 +49,7 @@ public:
 			if (logs.size() < 1)continue;
 
 			for (int j = 0; j < logs.size(); j++) {
-				std::shared_ptr<Log> log = logs[i];
+				std::shared_ptr<Log> log = logs[j];
                 std::string msg;
 
                 msg = "";
@@ -68,14 +69,74 @@ public:
                 msg += tmp;
                 msg += " ";
 
-                if (log->Order = Protra::Lib::Data::Order::Buy) {
+                if (log->Order == Protra::Lib::Data::Order::Buy) {
                     msg += "”ƒ";
                 }
                 else{
                     msg += "”„";
-                }
+                } 
                 fprintf(fp,"%s\n", msg.c_str());
 			}
+		}
+		fclose(fp);
+		return 0;
+	}
+	static int WriteCSVLog(std::string fname, std::shared_ptr<Protra::Lib::Config::BrandList> li, std::shared_ptr<LogData> logdata)
+	{
+		FILE* fp = NULL;
+		if (li == nullptr || li->List->size() < 1 || logdata == nullptr)return 1;
+		fp = zengo_open(fname.c_str(), "wt", "data");
+		if (fp == NULL)return 2;
+		for (int i = 0; i < li->List->size(); i++) {
+			std::string code;
+			std::vector<std::shared_ptr<Log> > logs;
+			code = li->List->at(i);
+			if (code == "") {
+				continue;
+			}
+			logs = logdata->GetLog(code);
+			if (logs.size() < 1)continue;
+
+			for (int j = 0; j < logs.size(); j++) {
+				std::shared_ptr<Log> log = logs[j];
+				std::string msg;
+
+				msg = "\"";
+				msg += log->Code;
+				msg += "\",";
+				msg += log->Name;
+				msg += ",";
+
+				char tmp[128];
+				Protra::Lib::Data::DateTime d = log->Date;
+				sprintf(tmp, "%02d/%02d/%04d", d.Day, d.Month, d.Year);
+
+				msg += tmp;
+				msg += ",";
+
+				sprintf(tmp, "%d,%d", log->Price, log->Quantity);
+				msg += tmp;
+				msg += ",";
+
+				msg+=std::to_string((int)log->Order);
+				fprintf(fp, "%s\n", msg.c_str());
+			}
+		}
+		fclose(fp);
+		return 0;
+	}
+	static int WriteGraphLog(std::string fname, std::shared_ptr<PtSim::PricePairList> pl)
+	{
+		FILE* fp = NULL;
+		if (pl == nullptr || pl->_sortedList2.size() < 1) {
+			return 1;
+		}
+		fp = zengo_open(fname.c_str(), "wt", "data");
+		if (fp == NULL)return 2;
+		for (int i = 0; i < pl->_sortedList2.size(); i++) {
+			std::shared_ptr<PtSim::PricePair> pp = pl->_sortedList[i];
+			fprintf(fp,"%02d/%02d/%02d,%d,%d\n", pp->Date.Day, pp->Date.Month, pp->Date.Year,
+				(int)pp->Book,(int)pp->Market);
 		}
 		fclose(fp);
 		return 0;

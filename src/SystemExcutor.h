@@ -106,15 +106,14 @@ public:
 		if (_interpreter->executed == 0)return;
 
 		{
-			std::string fn = "";
-			if (option->count("-p") != 0) {
-				fn=option->at("-p");
-			}
 			PtSim::Performance a(_name,_brandList,_timeFrame);
-			a.Calculate(logData,fn);
+			a.Calculate(logData,option);
 		}
 		if (option->count("-o") != 0) {
 			Protra::Lib::Data::DataWriter::WriteLog(option->at("-o"), _brandList, logData);
+		}
+		if (option->count("-s") != 0) {
+			Protra::Lib::Data::DataWriter::WriteCSVLog(option->at("-s"), _brandList, logData);
 		}
 		excuted = 1;
 	}

@@ -58,6 +58,14 @@ int main(int argc,char* argv[])
 			(*option.get())["-p"] = argv[i + 1];
 			i++;
 		}
+		else if (strcmp(argv[i], "-s") == 0 && i + 1 < argc) {
+			(*option.get())["-s"] = argv[i + 1];
+			i++;
+		}
+		else if (strcmp(argv[i], "-g") == 0 && i + 1 < argc) {
+			(*option.get())["-g"] = argv[i + 1];
+			i++;
+		}
 		else {
 			if (system_name == "") {
 				system_name = argv[i];
@@ -71,7 +79,9 @@ int main(int argc,char* argv[])
 		printf("\n");
 		printf("-h --help                オプションの表示\n");
 		printf("-o [filename]            取引データのファイルへの出力\n");
-		printf("-p [filename]            利益データのファイルへの出力\n");
+		printf("-s [filename]            取引データのCSVファイルへの出力\n");
+		printf("-p [filename]            利益分析データのファイルへの出力\n");
+		printf("-g [filename]            利益曲線データのファイルへの出力\n");
 		return 0;
 	}
 	if (bl->Name == "")bl->Name = "noname";

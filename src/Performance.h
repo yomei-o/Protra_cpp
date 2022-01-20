@@ -30,6 +30,7 @@
 #include "formatNumber.h"
 #include "hookprintf.h"
 #include "zengoopen.h"
+#include "DataWriter.h"
 
 namespace PtSim
 {
@@ -141,16 +142,17 @@ public:
 		_bookMaxDrowDown = maxDrowdown.Book;
 	}
 
-	std::shared_ptr<PricePairList> Calculate(std::shared_ptr< Protra::Lib::Data::LogData> logData,std::string fn)
+	std::shared_ptr<PricePairList> Calculate(std::shared_ptr< Protra::Lib::Data::LogData> logData, std::shared_ptr<std::map<std::string, std::string> > option)
 	{
-		std::shared_ptr<PricePairList> profits = AnalyzeLogs(logData);
+		std::shared_ptr<PricePairList> profits = AnalyzeLogs(logData,option);
 		if (profits->Count() == 0) {
 			throw std::runtime_error("取引がありません。");
 		}
 		_firstTrade = profits->_sortedList[0]->Date;
 		_lastTrade = profits->_sortedList[profits->_sortedList.size() - 1]->Date;
 		PrintResult();
-		if (fn != "") {
+		if (option->count("-p")!=0) {
+			std::string fn = option->at("-p");
 			std::string msg;
 			hookprintf::config::start(hookprintf::HOOK);
 			PrintResult();
@@ -164,7 +166,7 @@ public:
 		}
 		return profits;
 	}
-	std::shared_ptr<PricePairList> AnalyzeLogs(std::shared_ptr< Protra::Lib::Data::LogData> logData)
+	std::shared_ptr<PricePairList> AnalyzeLogs(std::shared_ptr< Protra::Lib::Data::LogData> logData,std::shared_ptr<std::map<std::string, std::string> > option)
     {
         std::shared_ptr<PricePairList> profits= std::shared_ptr<PricePairList>(new PricePairList);
         std::shared_ptr<PricePairList> positionValues= std::shared_ptr<PricePairList>(new PricePairList);
@@ -277,7 +279,11 @@ public:
 		std::shared_ptr<PricePairList> realPositionValues = positionValues->BookAccumulatedList();
         CalcMaxPosition(realPositionValues);
         std::shared_ptr<PricePairList> realProfits = profits->AccumulatedList();
-        CalcBudget(realProfits, realPositionValues);
+		if (option->count("-g") != 0) {
+			std::string fn = option->at("-g");
+			Protra::Lib::Data::DataWriter::WriteGraphLog(fn.c_str(), realProfits);
+		}
+		CalcBudget(realProfits, realPositionValues);
         CalcDrowdown(realProfits);
         return realProfits;
     }
