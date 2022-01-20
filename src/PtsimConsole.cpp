@@ -50,19 +50,19 @@ int main(int argc,char* argv[])
 			flag_help = 1;
 		}
 		else if (strcmp(argv[i], "-o") == 0 && i + 1 < argc) {
-			(* option.get())["-o"]=argv[i + 1];
+			(* option.get())["savetrading"]=argv[i + 1];
 			i++;
 		}
 		else if (strcmp(argv[i], "-p") == 0 && i + 1 < argc) {
-			(*option.get())["-p"] = argv[i + 1];
+			(*option.get())["saveprofit"] = argv[i + 1];
 			i++;
 		}
 		else if (strcmp(argv[i], "-s") == 0 && i + 1 < argc) {
-			(*option.get())["-s"] = argv[i + 1];
+			(*option.get())["savetradingcsv"] = argv[i + 1];
 			i++;
 		}
 		else if (strcmp(argv[i], "-g") == 0 && i + 1 < argc) {
-			(*option.get())["-g"] = argv[i + 1];
+			(*option.get())["saveprofitcsv"] = argv[i + 1];
 			i++;
 		}
 		else {
@@ -80,7 +80,7 @@ int main(int argc,char* argv[])
 		printf("-o [filename]            取引データのファイルへの出力\n");
 		printf("-s [filename]            取引データのCSVファイルへの出力\n");
 		printf("-p [filename]            利益分析データのファイルへの出力\n");
-		printf("-g [filename]            利益曲線データのファイルへの出力\n");
+		printf("-g [filename]            利益曲線データのCSVファイルへの出力\n");
 		return 0;
 	}
 	if (bl->Name == "")bl->Name = "noname";

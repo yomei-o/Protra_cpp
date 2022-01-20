@@ -151,8 +151,8 @@ public:
 		_firstTrade = profits->_sortedList[0]->Date;
 		_lastTrade = profits->_sortedList[profits->_sortedList.size() - 1]->Date;
 		PrintResult();
-		if (option->count("-p")!=0) {
-			std::string fn = option->at("-p");
+		if (option->count("saveprofit")!=0) {
+			std::string fn = option->at("saveprofit");
 			std::string msg;
 			hookprintf::config::start(hookprintf::HOOK);
 			PrintResult();
@@ -279,8 +279,8 @@ public:
 		std::shared_ptr<PricePairList> realPositionValues = positionValues->BookAccumulatedList();
         CalcMaxPosition(realPositionValues);
         std::shared_ptr<PricePairList> realProfits = profits->AccumulatedList();
-		if (option->count("-g") != 0) {
-			std::string fn = option->at("-g");
+		if (option->count("saveprofitcsv") != 0) {
+			std::string fn = option->at("saveprofitcsv");
 			Protra::Lib::Data::DataWriter::WriteGraphLog(fn.c_str(), realProfits);
 		}
 		CalcBudget(realProfits, realPositionValues);

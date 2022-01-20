@@ -33,7 +33,10 @@ int main(int argc,char* argv[])
 	cex->AddLog(2001, 4, 3, "1378", "hoge", 1200, 100, 0);
 	cex->AddLog(2001, 4, 10, "1378", "hoge", 1300, 100, 1);
 
-	//(*option.get())["-g"] = "sample.csv";
+	option->insert({{"saveprofit","profit.txt"}});
+	option->insert({{"saveprofitcsv","profit.csv"}});
+	option->insert({{"savetrading", "trading.txt"}});
+	option->insert({{"savetradingcsv","tading.csv"}});
 
 	cex->Performance(option);
 

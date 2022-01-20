@@ -108,11 +108,11 @@ public:
 		try{
 			PtSim::Performance a(_name,_brandList,_timeFrame);
 			a.Calculate(logData,option);
-			if (option->count("-o") != 0) {
-				Protra::Lib::Data::DataWriter::WriteLog(option->at("-o"), _brandList, logData);
+			if (option->count("savetrading") != 0) {
+				Protra::Lib::Data::DataWriter::WriteLog(option->at("savetrading"), _brandList, logData);
 			}
-			if (option->count("-s") != 0) {
-				Protra::Lib::Data::DataWriter::WriteCSVLog(option->at("-s"), _brandList, logData);
+			if (option->count("savetradingcsv") != 0) {
+				Protra::Lib::Data::DataWriter::WriteCSVLog(option->at("savetradingcsv"), _brandList, logData);
 			}
 			excuted = 1;
 		}
