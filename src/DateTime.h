@@ -125,6 +125,11 @@ public:
         sprintf(buf,"%04d%02d%02d",Year,Month,Day);
         return buf;
     }
+    std::string toStringCSV() {
+        char buf[64];
+        sprintf(buf, "%04d/%02d/%02d", Year, Month, Day);
+        return buf;
+    }
 
 };
 

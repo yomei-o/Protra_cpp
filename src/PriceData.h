@@ -24,6 +24,7 @@
 #include <string>
 #include "DateTime.h"
 #include "BinaryReader.h"
+#include "BinaryWriter.h"
 #include "BrandData.h"
 #include "Global.h"
 
@@ -69,6 +70,15 @@ public:
         Low = b.ReadInt32();
         Close = b.ReadInt32();
         Volume = b.ReadDouble();
+    }
+    void Write(BinaryWriter& b)
+    {
+        b.WriteInt32(Date.Value);
+        b.WriteInt32(Open);
+        b.WriteInt32(High);
+        b.WriteInt32(Low);
+        b.WriteInt32(Close);
+        b.WriteDouble(Volume);
     }
 };
 
@@ -166,10 +176,14 @@ public:
                 prices->push_back(p);
             }
         }
+        std::shared_ptr <Brand> brand;
         std::shared_ptr<BrandData> branddata=GlobalEnv::BrandData();
-        if (branddata == nullptr)return ret;
-        std::shared_ptr <Brand> brand=branddata->Brand(code);
-        if (brand == nullptr)return ret;
+        if (branddata != nullptr) {
+            brand = branddata->Brand(code);
+        }
+        if (brand == nullptr) {
+            brand = std::shared_ptr<Brand>(new Brand());
+        }
 
         int sz = (int)brand->Split.size();
         for (int i = 0; i < sz; i++) {
