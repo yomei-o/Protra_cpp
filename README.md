@@ -67,7 +67,13 @@ g++ -o CppSmaple CppSample.cpp
 コマンドラインから上記のコマンドを入力することでCppSampleをビルドすることができます。  
   
   
-# 未実装項目
-Pythonから使えるようにする予定ですが、まだできていません。  
+# PyPtsim
+システムトレードの損益シミュレーション部分をPythonから使えるようにしたものです。  
   
+  
+### コンパイルと実行方法
+Cythonをインストールして以下のコマンドを実行することで、Pythonのプラグインをビルドすることができます。  
+python setup.py build_ext --inplace  
+sample.pyにPythonのサンプルがあります。  
+
   
