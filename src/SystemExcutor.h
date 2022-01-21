@@ -32,97 +32,102 @@
 #include "Performance.h"
 #include "DataWriter.h"
 
-class SystemExcutor {
-public:
-	std::string _name;
-	std::shared_ptr<Protra::Lib::Lang::Interpreter> _interpreter;
-	std::shared_ptr < Protra::Lib::Config::BrandList> _brandList;
-	int _timeFrame;
-	int initialized;
-	int excuted;
+namespace PtSim
+{
 
-	SystemExcutor(std::string name, std::shared_ptr<Protra::Lib::Config::BrandList> bl,int timeFrame)
-	{
-		initialized = 0;
-		excuted = 0;
-		_name = name;
-		_brandList = bl;
-		_timeFrame = timeFrame;
 
-		std::shared_ptr<Protra::Lib::Data::BrandData>& bd = Protra::Lib::GlobalEnv::BrandData();
-		bd=std::shared_ptr<Protra::Lib::Data::BrandData>(new Protra::Lib::Data::BrandData());
-		bd->Load();
-		initialized = 1;
-	}
-	void LoopBrandAndDate(std::shared_ptr<std::map<std::string,std::string> > option)
-	{
-		std::shared_ptr< Protra::Lib::Data::LogData> logData;
-		logData = std::shared_ptr< Protra::Lib::Data::LogData>(new Protra::Lib::Data::LogData(_name, _timeFrame));
+	class SystemExcutor {
+	public:
+		std::string _name;
+		std::shared_ptr<Protra::Lib::Lang::Interpreter> _interpreter;
+		std::shared_ptr < Protra::Lib::Config::BrandList> _brandList;
+		int _timeFrame;
+		int initialized;
+		int excuted;
 
-		_interpreter = std::shared_ptr<Protra::Lib::Lang::Interpreter>(new Protra::Lib::Lang::Interpreter(_name));
-		if (_interpreter->initialized == 0)return;
-		if (_brandList->List->size() == 0)return;
+		SystemExcutor(std::string name, std::shared_ptr<Protra::Lib::Config::BrandList> bl, int timeFrame)
+		{
+			initialized = 0;
+			excuted = 0;
+			_name = name;
+			_brandList = bl;
+			_timeFrame = timeFrame;
 
-		int bl_sz = (int)_brandList->List->size();
-		for (int i = 0;  i < bl_sz; i++) {
-			std::shared_ptr< Protra::Lib::Lang::Builtins::Builtins> btin;
-			Protra::Lib::Lang::Builtins::BasicBuiltins* bb;
-			std::shared_ptr< Protra::Lib::Lang::Builtins::Builtins> stin;
-			Protra::Lib::Lang::Builtins::SimulateBuiltins* sb;
+			std::shared_ptr<Protra::Lib::Data::BrandData>& bd = Protra::Lib::GlobalEnv::BrandData();
+			bd = std::shared_ptr<Protra::Lib::Data::BrandData>(new Protra::Lib::Data::BrandData());
+			bd->Load();
+			initialized = 1;
+		}
+		void LoopBrandAndDate(std::shared_ptr<std::map<std::string, std::string> > option)
+		{
+			std::shared_ptr< Protra::Lib::Data::LogData> logData;
+			logData = std::shared_ptr< Protra::Lib::Data::LogData>(new Protra::Lib::Data::LogData(_name, _timeFrame));
 
-			std::shared_ptr<Protra::Lib::Data::PriceList> prices;
-			prices = Protra::Lib::Data::PriceData::GetPrices(_brandList->List->at(i), Protra::Lib::Data::TimeFrame::Daily);
-			if (prices == nullptr)continue;
+			_interpreter = std::shared_ptr<Protra::Lib::Lang::Interpreter>(new Protra::Lib::Lang::Interpreter(_name));
+			if (_interpreter->initialized == 0)return;
+			if (_brandList->List->size() == 0)return;
 
-			btin=Protra::Lib::Lang::Builtins::BasicBuiltins::Init(_interpreter->_resource->Builtins);
-			bb = (Protra::Lib::Lang::Builtins::BasicBuiltins*)(btin.get());
+			int bl_sz = (int)_brandList->List->size();
+			for (int i = 0; i < bl_sz; i++) {
+				std::shared_ptr< Protra::Lib::Lang::Builtins::Builtins> btin;
+				Protra::Lib::Lang::Builtins::BasicBuiltins* bb;
+				std::shared_ptr< Protra::Lib::Lang::Builtins::Builtins> stin;
+				Protra::Lib::Lang::Builtins::SimulateBuiltins* sb;
 
-			bb->Index = 0;
-			bb->RightIndex = prices->Count() - 1;
-			bb->Prices(prices);
+				std::shared_ptr<Protra::Lib::Data::PriceList> prices;
+				prices = Protra::Lib::Data::PriceData::GetPrices(_brandList->List->at(i), Protra::Lib::Data::TimeFrame::Daily);
+				if (prices == nullptr)continue;
 
-			stin = Protra::Lib::Lang::Builtins::SimulateBuiltins::Init(_interpreter->_resource->Builtins);
-			sb = (Protra::Lib::Lang::Builtins::SimulateBuiltins*)(stin.get());
+				btin = Protra::Lib::Lang::Builtins::BasicBuiltins::Init(_interpreter->_resource->Builtins);
+				bb = (Protra::Lib::Lang::Builtins::BasicBuiltins*)(btin.get());
 
-			sb->Index = 0;
-			sb->BrandList = _brandList;
-			sb->System = _name;
-			sb->LogData = logData;
-			sb->Prices(prices);
+				bb->Index = 0;
+				bb->RightIndex = prices->Count() - 1;
+				bb->Prices(prices);
 
-			_interpreter->GlobalVariableTable().clear();
+				stin = Protra::Lib::Lang::Builtins::SimulateBuiltins::Init(_interpreter->_resource->Builtins);
+				sb = (Protra::Lib::Lang::Builtins::SimulateBuiltins*)(stin.get());
 
-			if (prices == nullptr)continue;
+				sb->Index = 0;
+				sb->BrandList = _brandList;
+				sb->System = _name;
+				sb->LogData = logData;
+				sb->Prices(prices);
 
-			for (int j=0;j < prices->Count(); j++)
-			{
-				bb->Index=j;
-				sb->Index = j;
-				_interpreter->Execute();
+				_interpreter->GlobalVariableTable().clear();
+
+				if (prices == nullptr)continue;
+
+				for (int j = 0; j < prices->Count(); j++)
+				{
+					bb->Index = j;
+					sb->Index = j;
+					_interpreter->Execute();
+					if (_interpreter->executed == 0)break;
+				}
 				if (_interpreter->executed == 0)break;
 			}
-			if (_interpreter->executed == 0)break;
-		}
-		if (_interpreter->executed == 0)return;
+			if (_interpreter->executed == 0)return;
 
-		try{
-			PtSim::Performance a(_name,_brandList,_timeFrame);
-			a.Calculate(logData,option);
-			if (option->count("savetrading") != 0) {
-				Protra::Lib::Data::DataWriter::WriteLog(option->at("savetrading"), _brandList, logData);
+			try {
+				PtSim::Performance a(_name, _brandList, _timeFrame);
+				a.Calculate(logData, option);
+				if (option->count("savetrading") != 0) {
+					Protra::Lib::Data::DataWriter::WriteLog(option->at("savetrading"), _brandList, logData);
+				}
+				if (option->count("savetradingcsv") != 0) {
+					Protra::Lib::Data::DataWriter::WriteCSVLog(option->at("savetradingcsv"), _brandList, logData);
+				}
+				excuted = 1;
 			}
-			if (option->count("savetradingcsv") != 0) {
-				Protra::Lib::Data::DataWriter::WriteCSVLog(option->at("savetradingcsv"), _brandList, logData);
+			catch (...) {
+				printf("performance runtime error  \n");
 			}
-			excuted = 1;
 		}
-		catch (...){
-			printf("performance runtime error  \n");
-		}
-	}
 
-};
+	};
 
+}
 
 #endif
 

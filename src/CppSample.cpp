@@ -25,8 +25,8 @@ int main(int argc,char* argv[])
 	option = std::shared_ptr <std::map<std::string, std::string> >(new (std::map<std::string, std::string>));
 
 
-	std::shared_ptr<CppExcutor> cex;
-	cex = std::shared_ptr<CppExcutor>(new CppExcutor("sample"));
+	std::shared_ptr<PtSim::CppExcutor> cex;
+	cex = std::shared_ptr<PtSim::CppExcutor>(new PtSim::CppExcutor("sample"));
 	if (cex->initialized == 0) {
 		printf("initialize error\n");
 		return 1;

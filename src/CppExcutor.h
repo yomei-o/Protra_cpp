@@ -30,69 +30,73 @@
 #include "Performance.h"
 #include "DataWriter.h"
 
-class CppExcutor {
-public:
-	std::string _name;
-	int initialized;
-	int excuted;
-	std::shared_ptr< Protra::Lib::Data::LogData> logData;
-	std::map<std::string, int> codes;
+namespace PtSim
+{
 
-	CppExcutor(std::string name)
-	{
-		initialized = 0;
-		excuted = 0;
-		_name = name;
-		std::shared_ptr<Protra::Lib::Data::BrandData>& bd = Protra::Lib::GlobalEnv::BrandData();
-		bd = std::shared_ptr<Protra::Lib::Data::BrandData>(new Protra::Lib::Data::BrandData());
-		bd->Load();
-		logData = std::shared_ptr< Protra::Lib::Data::LogData>(new Protra::Lib::Data::LogData(_name,Protra::Lib::Data::TimeFrame::Daily));
-		initialized = 1;
-	}
-	void AddLog(int year, int month, int day, std::string code, std::string name, int pri, int qua, int order)
-	{
-		Protra::Lib::Data::DateTime date(year,month,day);
+	class CppExcutor {
+	public:
+		std::string _name;
+		int initialized;
+		int excuted;
+		std::shared_ptr< Protra::Lib::Data::LogData> logData;
+		std::map<std::string, int> codes;
 
-		std::shared_ptr < Protra::Lib::Data::Log> log;
-		log = std::shared_ptr < Protra::Lib::Data::Log>(new(Protra::Lib::Data::Log));
-		log->Code = code;
-		log->Name = name;
-		log->Price = pri;
-		log->Quantity = qua;
-		log->Order = order;
-		log->Date = date;
-		logData->Add(log);
-		codes[code] = 1;
-	}
-	void Performance(std::shared_ptr<std::map<std::string,std::string> > option)
-	{
-		std::shared_ptr<Protra::Lib::Config::BrandList> _brandList;
-		_brandList = std::shared_ptr<Protra::Lib::Config::BrandList>(new(Protra::Lib::Config::BrandList));
-		_brandList->List = std::shared_ptr <std::vector<std::string> >(new std::vector<std::string>);
-		for (const auto& item : codes) {
-			_brandList->List->push_back(item.first);
+		CppExcutor(std::string name)
+		{
+			initialized = 0;
+			excuted = 0;
+			_name = name;
+			std::shared_ptr<Protra::Lib::Data::BrandData>& bd = Protra::Lib::GlobalEnv::BrandData();
+			bd = std::shared_ptr<Protra::Lib::Data::BrandData>(new Protra::Lib::Data::BrandData());
+			bd->Load();
+			logData = std::shared_ptr< Protra::Lib::Data::LogData>(new Protra::Lib::Data::LogData(_name, Protra::Lib::Data::TimeFrame::Daily));
+			initialized = 1;
 		}
+		void AddLog(int year, int month, int day, std::string code, std::string name, int pri, int qua, int order)
+		{
+			Protra::Lib::Data::DateTime date(year, month, day);
 
-		try {
-			PtSim::Performance a(_name, _brandList, Protra::Lib::Data::TimeFrame::Daily);
-			a.Calculate(logData, option);
-
-			if (option->count("savetrading") != 0) {
-				Protra::Lib::Data::DataWriter::WriteLog(option->at("savetrading"), _brandList, logData);
+			std::shared_ptr < Protra::Lib::Data::Log> log;
+			log = std::shared_ptr < Protra::Lib::Data::Log>(new(Protra::Lib::Data::Log));
+			log->Code = code;
+			log->Name = name;
+			log->Price = pri;
+			log->Quantity = qua;
+			log->Order = order;
+			log->Date = date;
+			logData->Add(log);
+			codes[code] = 1;
+		}
+		void Performance(std::shared_ptr<std::map<std::string, std::string> > option)
+		{
+			std::shared_ptr<Protra::Lib::Config::BrandList> _brandList;
+			_brandList = std::shared_ptr<Protra::Lib::Config::BrandList>(new(Protra::Lib::Config::BrandList));
+			_brandList->List = std::shared_ptr <std::vector<std::string> >(new std::vector<std::string>);
+			for (const auto& item : codes) {
+				_brandList->List->push_back(item.first);
 			}
-			if (option->count("savetradingcsv") != 0) {
-				Protra::Lib::Data::DataWriter::WriteCSVLog(option->at("savetradingcsv"), _brandList, logData);
+
+			try {
+				PtSim::Performance a(_name, _brandList, Protra::Lib::Data::TimeFrame::Daily);
+				a.Calculate(logData, option);
+
+				if (option->count("savetrading") != 0) {
+					Protra::Lib::Data::DataWriter::WriteLog(option->at("savetrading"), _brandList, logData);
+				}
+				if (option->count("savetradingcsv") != 0) {
+					Protra::Lib::Data::DataWriter::WriteCSVLog(option->at("savetradingcsv"), _brandList, logData);
+				}
+				excuted = 1;
 			}
-			excuted = 1;
+			catch (...) {
+				printf("performance runtime error  \n");
+			}
+
 		}
-		catch (...) {
-			printf("performance runtime error  \n");
-		}
 
-	}
+	};
 
-};
-
+}
 
 #endif
 

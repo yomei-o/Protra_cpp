@@ -84,8 +84,8 @@ int main(int argc,char* argv[])
 		return 0;
 	}
 	if (bl->Name == "")bl->Name = "noname";
-	std::shared_ptr<SystemExcutor> mf;
-	mf = std::shared_ptr<SystemExcutor>(new SystemExcutor(system_name,bl,Protra::Lib::Data::TimeFrame::Daily));
+	std::shared_ptr<PtSim::SystemExcutor> mf;
+	mf = std::shared_ptr<PtSim::SystemExcutor>(new PtSim::SystemExcutor(system_name,bl,Protra::Lib::Data::TimeFrame::Daily));
 	if (mf->initialized == 0) {
 		printf("PtSimConsole initialize error\n");
 		return 1;
