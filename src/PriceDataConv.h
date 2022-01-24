@@ -85,7 +85,7 @@ public:
                 if (token.size() < 6)continue;
                 p.Code = code;
                 yy = 0; mm = 0; dd = 0;
-                sscanf(token[0].c_str(), "%d/%d,%d", &yy, &mm, &dd);
+                sscanf(token[0].c_str(), "%d/%d/%d", &yy, &mm, &dd);
                 p.Date = DateTime(yy, mm, dd);
                 p.Open = std::stoi(token[1]);
                 p.High = std::stoi(token[2]);

@@ -33,7 +33,8 @@ class Builtins{
 public:
 	virtual std::shared_ptr<Value>  Invoke(std::string& name, std::vector<std::shared_ptr<Value> >& args, int at, std::string& ats)
 	{
-		throw std::runtime_error("No Such a Builtin");
+		std::string msg = "No Such a Builtin " + name;
+		throw std::runtime_error(msg.c_str());
 		//return std::shared_ptr<Value>(new Value(false));
 	}
 	virtual void Regist(std::vector<std::string>& names, std::shared_ptr<Builtins>& ptr) 

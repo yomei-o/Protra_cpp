@@ -157,6 +157,47 @@ public:
         return DateTime(cashe_maxdate);
     }
 
+    static std::shared_ptr<PriceList> GetPricesCSV(std::string code, int timeFrame, bool needLastWeek = false)
+    {
+        std::shared_ptr<PriceList> ret;
+        std::string filename = code+".csv";
+        std::shared_ptr<std::vector<std::shared_ptr<Price> > > prices;
+
+        prices = std::shared_ptr<std::vector<std::shared_ptr<Price> > >(new(std::vector<std::shared_ptr<Price> >));
+        try {
+            StreamReader f = StreamReader(filename);
+            std::string line;
+            while ((line = f.ReadLine()) != "")
+            {
+                std::shared_ptr<Price> p;
+                std::vector<std::string> token;
+                int yy, mm, dd;
+                token = split(line, ",");
+                if (token.size() < 6)continue;
+                p = std::shared_ptr<Price>(new Price());
+                p->Code = code;
+                yy = 0; mm = 0; dd = 0;
+                sscanf(token[0].c_str(), "%d/%d/%d", &yy, &mm, &dd);
+                p->Date = DateTime(yy, mm, dd);
+                p->Open = std::stoi(token[1]);
+                p->High = std::stoi(token[2]);
+                p->Low = std::stoi(token[3]);
+                p->Close = std::stoi(token[4]);
+                p->Volume = std::stod(token[5]);
+                prices->push_back(p);
+            }
+        }
+        catch (...) {
+            return ret;
+        }
+        if (timeFrame == TimeFrame::Daily) {
+            ret = std::shared_ptr<PriceList>(new PriceList(prices, needLastWeek));
+            return ret;
+        }
+        ret = GenerateWeeklyPrices(prices, needLastWeek);
+        return ret;
+    }
+
     static std::shared_ptr<PriceList> GetPrices(std::string code,int timeFrame, bool needLastWeek = false)
     {
         std::shared_ptr<PriceList> ret;

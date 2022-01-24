@@ -77,6 +77,9 @@ public:
             if (_priceDataCache[ats] == nullptr) {
                     _priceDataCache[ats] = Protra::Lib::Data::PriceData::GetPrices(ats, prices->TimeFrame);
             }
+            if (_priceDataCache[ats] == nullptr) {
+                    _priceDataCache[ats] = Protra::Lib::Data::PriceData::GetPricesCSV(ats, prices->TimeFrame);
+            }
             prices = _priceDataCache[ats];
             if (prices == nullptr) {
                 return std::shared_ptr<Value>(new Value());

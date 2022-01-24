@@ -76,6 +76,9 @@ namespace PtSim
 
 				std::shared_ptr<Protra::Lib::Data::PriceList> prices;
 				prices = Protra::Lib::Data::PriceData::GetPrices(_brandList->List->at(i), Protra::Lib::Data::TimeFrame::Daily);
+				if (prices == nullptr){
+					prices = Protra::Lib::Data::PriceData::GetPricesCSV(_brandList->List->at(i), Protra::Lib::Data::TimeFrame::Daily);
+				}
 				if (prices == nullptr)continue;
 
 				btin = Protra::Lib::Lang::Builtins::BasicBuiltins::Init(_interpreter->_resource->Builtins);

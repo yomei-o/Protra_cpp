@@ -86,7 +86,7 @@ inline FILE* zengo_protra_open(const char* file, const char* mode)
 	if (file == NULL || mode == NULL)return ret;
 	if (strlen(file) > 1000)return ret;
 
-	ret = zengo_open(file, mode, "data");
+	ret = zengo_price_open(file, mode, "data");
 	if (ret)return ret;
 
 	ret = zengo_open(file, mode,"lib");

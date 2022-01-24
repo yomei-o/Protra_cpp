@@ -180,6 +180,9 @@ public:
             std::string code = _brandList->List->at(i);
             std::shared_ptr<Protra::Lib::Data::PriceList>prices = Protra::Lib::Data::PriceData::GetPrices(code, _timeFrame);
             if (prices == nullptr) {
+	            prices = Protra::Lib::Data::PriceData::GetPricesCSV(code, _timeFrame);
+            }
+            if (prices == nullptr) {
                 continue;
             }
             std::vector<std::shared_ptr<Protra::Lib::Data::Log> >logs = logData->GetLog(code);
