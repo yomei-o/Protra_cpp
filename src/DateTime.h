@@ -15,7 +15,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 // 
-// $Id: Global.cs 389 2010-11-28 06:45:45Z panacoran $
 
 #ifndef DF_DATETIME_H_
 #define DF_DATETIME_H_
