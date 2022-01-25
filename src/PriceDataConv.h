@@ -1,4 +1,5 @@
-﻿// Copyright(C) 2010, 2013, 2014 panacoran <panacoran@users.sourceforge.jp>
+﻿// Copyright (C) 2022 Yomei Otani <yomei.otani@gmail.com>
+// Copyright(C) 2010, 2013, 2014 panacoran <panacoran@users.sourceforge.jp>
 // 
 // This program is part of Protra.
 //
@@ -15,7 +16,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program; if not, see <http://www.gnu.org/licenses/>.
 // 
-// $Id: PriceData.cs 550 2021-01-10 05:21:56Z darai $
 
 #include <string>
 #include <stdio.h>
