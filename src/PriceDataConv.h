@@ -58,7 +58,7 @@ public:
                 msg += ",";
                 msg += std::to_string(p.Close);
                 msg += ",";
-                sprintf(buf, "%g", p.Volume);
+                sprintf(buf, "%.0f", p.Volume);
                 msg += buf;
                 f.WriteLine(msg);
             }
