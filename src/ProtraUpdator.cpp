@@ -11,6 +11,8 @@ void thread_main()
 {
     int ret;
     std::shared_ptr<Protra::Lib::Update::PriceDataUpdator> u;
+    u = std::shared_ptr<Protra::Lib::Update::PriceDataUpdator>(new Protra::Lib::Update::IndexUpdator());
+    ret = u->Update();
     u = std::shared_ptr<Protra::Lib::Update::PriceDataUpdator>(new Protra::Lib::Update::KabukaJohoUpdator());
     ret=u->Update();
 }

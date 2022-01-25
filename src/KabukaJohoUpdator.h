@@ -138,6 +138,8 @@ public:
 		writeDouble(fp, d5);
 		fclose(fp);
 
+#if 0
+		//デバッグ用のCSV出力
 		file += ".csv";
 		fp = fopen(file.c_str(), "at");
 		if (fp == NULL)return 1;
@@ -145,6 +147,8 @@ public:
 			d1,d2,d3,d4,(int)d5);
 		if (fp == NULL)return 1;
 		fclose(fp);
+#endif
+
 		return 0;
 	}
 	int Update() override {
