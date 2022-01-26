@@ -32,11 +32,16 @@ namespace Data {
 
 class DataWriter {
 public:
-	static int WriteLog(std::string fname, std::shared_ptr<Protra::Lib::Config::BrandList> li, std::shared_ptr<LogData> logdata)
+	static int WriteLog(std::string fname, std::shared_ptr<Protra::Lib::Config::BrandList> li, std::shared_ptr<LogData> logdata,int append = 0)
 	{
 		FILE* fp = NULL;
 		if (li == nullptr || li->List->size()<1 || logdata == nullptr)return 1;
-		fp = zengo_open(fname.c_str(), "wt", "data");
+		if (append) {
+			fp = zengo_open(fname.c_str(), "at", "data");
+		}
+		else {
+			fp = zengo_open(fname.c_str(), "wt", "data");
+		}
 		if (fp == NULL)return 2;
 		for (int i = 0; i < li->List->size(); i++) {
 			std::string code;
@@ -81,11 +86,16 @@ public:
 		fclose(fp);
 		return 0;
 	}
-	static int WriteCSVLog(std::string fname, std::shared_ptr<Protra::Lib::Config::BrandList> li, std::shared_ptr<LogData> logdata)
+	static int WriteCSVLog(std::string fname, std::shared_ptr<Protra::Lib::Config::BrandList> li, std::shared_ptr<LogData> logdata,int append=0)
 	{
 		FILE* fp = NULL;
 		if (li == nullptr || li->List->size() < 1 || logdata == nullptr)return 1;
-		fp = zengo_open(fname.c_str(), "wt", "data");
+		if (append) {
+			fp = zengo_open(fname.c_str(), "at", "data");
+		}
+		else {
+			fp = zengo_open(fname.c_str(), "wt", "data");
+		}
 		if (fp == NULL)return 2;
 		for (int i = 0; i < li->List->size(); i++) {
 			std::string code;

@@ -31,6 +31,7 @@
 #include "LogData.h"
 #include "Performance.h"
 #include "DataWriter.h"
+#include "DataReader.h"
 
 namespace PtSim
 {
@@ -41,6 +42,7 @@ namespace PtSim
 		std::string _name;
 		std::shared_ptr<Protra::Lib::Lang::Interpreter> _interpreter;
 		std::shared_ptr < Protra::Lib::Config::BrandList> _brandList;
+		std::shared_ptr< Protra::Lib::Data::LogData> logData;
 		int _timeFrame;
 		int initialized;
 		int excuted;
@@ -56,12 +58,15 @@ namespace PtSim
 			std::shared_ptr<Protra::Lib::Data::BrandData>& bd = Protra::Lib::GlobalEnv::BrandData();
 			bd = std::shared_ptr<Protra::Lib::Data::BrandData>(new Protra::Lib::Data::BrandData());
 			bd->Load();
+			logData = std::shared_ptr< Protra::Lib::Data::LogData>(new Protra::Lib::Data::LogData(_name, _timeFrame));
 			initialized = 1;
 		}
 		void LoopBrandAndDate(std::shared_ptr<std::map<std::string, std::string> > option)
 		{
-			std::shared_ptr< Protra::Lib::Data::LogData> logData;
-			logData = std::shared_ptr< Protra::Lib::Data::LogData>(new Protra::Lib::Data::LogData(_name, _timeFrame));
+			if (option->count("logfile") != 0) {
+				excuted = 1;
+				return;
+			}
 
 			_interpreter = std::shared_ptr<Protra::Lib::Lang::Interpreter>(new Protra::Lib::Lang::Interpreter(_name));
 			if (_interpreter->initialized == 0)return;
@@ -76,7 +81,7 @@ namespace PtSim
 
 				std::shared_ptr<Protra::Lib::Data::PriceList> prices;
 				prices = Protra::Lib::Data::PriceData::GetPrices(_brandList->List->at(i), Protra::Lib::Data::TimeFrame::Daily);
-				if (prices == nullptr){
+				if (prices == nullptr) {
 					prices = Protra::Lib::Data::PriceData::GetPricesCSV(_brandList->List->at(i), Protra::Lib::Data::TimeFrame::Daily);
 				}
 				if (prices == nullptr)continue;
@@ -111,17 +116,31 @@ namespace PtSim
 				if (_interpreter->executed == 0)break;
 			}
 			if (_interpreter->executed == 0)return;
-
 			try {
-				PtSim::Performance a(_name, _brandList, _timeFrame);
-				a.Calculate(logData, option);
 				if (option->count("savetrading") != 0) {
 					Protra::Lib::Data::DataWriter::WriteLog(option->at("savetrading"), _brandList, logData);
 				}
 				if (option->count("savetradingcsv") != 0) {
 					Protra::Lib::Data::DataWriter::WriteCSVLog(option->at("savetradingcsv"), _brandList, logData);
 				}
+				if (option->count("appendlog") != 0) {
+					Protra::Lib::Data::DataWriter::WriteCSVLog(option->at("appendlog"), _brandList, logData,1);
+				}
 				excuted = 1;
+			}
+			catch (...) {
+				printf("loop brand data runtime error  \n");
+			}
+		}
+		void Performance(std::shared_ptr<std::map<std::string, std::string> > option)
+		{
+			try {
+				if (option->count("appendlog") != 0)return;
+				if (option->count("logfile") != 0) {
+					Protra::Lib::Data::DataReader::ReadCSVLog(option->at("logfile"), logData,_brandList);
+				}
+				PtSim::Performance a(_name, _brandList, _timeFrame);
+				a.Calculate(logData, option);
 			}
 			catch (...) {
 				printf("performance runtime error  \n");

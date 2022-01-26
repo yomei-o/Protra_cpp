@@ -65,6 +65,14 @@ int main(int argc,char* argv[])
 			(*option.get())["saveprofitcsv"] = argv[i + 1];
 			i++;
 		}
+		else if (strcmp(argv[i], "-a") == 0 && i + 1 < argc) {
+			(*option.get())["appendlog"] = argv[i + 1];
+			i++;
+		}
+		else if (strcmp(argv[i], "-l") == 0 && i + 1 < argc) {
+			(*option.get())["logfile"] = argv[i + 1];
+			i++;
+		}
 		else {
 			if (system_name == "") {
 				system_name = argv[i];
@@ -73,7 +81,7 @@ int main(int argc,char* argv[])
 			bl->List->push_back(argv[i]);
 		}
 	}
-	if (flag_help || system_name=="" || bl->List->size()<1) {
+	if ((flag_help || system_name=="" || bl->List->size()<1) && option->count("logfile")==0) {
 		printf("PtSimConsole [option ...] file.pt Code1 [Code2 ...] \n");
 		printf("\n");
 		printf("-h --help                オプションの表示\n");
@@ -81,6 +89,8 @@ int main(int argc,char* argv[])
 		printf("-s [filename]            取引データのCSVファイルへの出力\n");
 		printf("-p [filename]            利益分析データのファイルへの出力\n");
 		printf("-g [filename]            利益曲線データのCSVファイルへの出力\n");
+		printf("-a [filename]            ログデータのCSV追加まで実行し\n");
+		printf("-l [filename]            CSVログデータから利益分析を行う\n");
 		return 0;
 	}
 	if (bl->Name == "")bl->Name = "noname";
@@ -95,6 +105,7 @@ int main(int argc,char* argv[])
 		printf("PtSimConsole excute error\n");
 		return 1;
 	}
+	mf->Performance(option);
 	return 0;
 }
 
