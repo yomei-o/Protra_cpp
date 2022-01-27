@@ -34,8 +34,20 @@ class FunctionNode : public ExpressionNode
 public:
 	std::shared_ptr<FunctionType> _functionType;
 	std::vector<std::shared_ptr<ExpressionNode> > _nodeList;
-
-    std::shared_ptr<ExpressionNode> Parse(std::shared_ptr<ExpressionNode>& that, Scanner& scanner)override
+	static int& nest_count()
+	{
+		static int nest_count = 0;
+		return nest_count;
+	}
+	void nest_count_inc()
+	{
+		nest_count()++;
+	}
+	void nest_count_dec()
+	{
+		nest_count()--;
+	}
+	std::shared_ptr<ExpressionNode> Parse(std::shared_ptr<ExpressionNode>& that, Scanner& scanner)override
     {
 		Token = scanner._Token;
 
@@ -83,6 +95,12 @@ public:
 		// 関数が定義されていれば実行する
 		if (resource.FunctionTable[_functionType->toString()] != nullptr)
 		{
+			nest_count_inc();
+			if (nest_count() > 100) {
+				throw std::runtime_error("nest detect");
+			}
+			//printf("nestcount=%d\n",nest_count());
+
 			// 関数定義ノードの取得
 			std::shared_ptr<ExecutableNode> fdn = resource.FunctionTable[_functionType->toString()];
 
@@ -109,6 +127,7 @@ public:
 					break;
 				case Result::Return:
 					resource.Stack.pop_back();
+					nest_count_dec();
 					return resource.ReturnValue;
 				case Result::Confinue:
 					throw std::runtime_error(ParseException("unexpected continue", resource.Token));
@@ -118,6 +137,7 @@ public:
 			}
 			resource.Stack.pop_back();
 			//return null;
+			nest_count_dec();
 			return std::shared_ptr<Value>(new Value(false));
 		}
 

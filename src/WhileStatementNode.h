@@ -31,6 +31,19 @@ namespace Lang {
 class WhileStatementNode : public ExecutableNode
 {
 public:
+    static int& is_timeout()
+    {
+        static int timeout = 0;
+        return timeout;
+    }
+    static void set_timeout()
+    {
+        is_timeout() = 1;
+    }
+    static void clear_timeout()
+    {
+        is_timeout() = 0;
+    }
     std::shared_ptr<ExpressionNode> _condNode;
     std::vector< std::shared_ptr<ExecutableNode> > _nodeList;
 
@@ -69,7 +82,9 @@ public:
         while (val != nullptr && val->IsTrue())
         {
             int sz = (int)_nodeList.size();
-
+            if (is_timeout()) {
+                throw std::runtime_error("timeout");
+            }
             for(int i=0;i<sz;i++){
                 std::shared_ptr<ExecutableNode> node;
                 node = _nodeList[i];

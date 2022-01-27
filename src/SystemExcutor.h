@@ -32,7 +32,7 @@
 #include "Performance.h"
 #include "DataWriter.h"
 #include "DataReader.h"
-
+#include "WhileStatementNode.h"
 namespace PtSim
 {
 
@@ -145,6 +145,12 @@ namespace PtSim
 			catch (...) {
 				printf("performance runtime error  \n");
 			}
+		}
+		static void ClearInterpretor() {
+			Protra::Lib::Lang::WhileStatementNode::clear_timeout();
+		}
+		static void StopInterpretor() {
+			Protra::Lib::Lang::WhileStatementNode::set_timeout();
 		}
 
 	};

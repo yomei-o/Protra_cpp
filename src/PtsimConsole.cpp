@@ -18,6 +18,8 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <thread>
+#include <chrono>
 
 #if defined(_WIN32) && !defined(__GNUC__)
 #define _CRTDBG_MAP_ALLOC
@@ -33,6 +35,22 @@
 
 #include "Ptsim.h"
 
+static std::shared_ptr<PtSim::SystemExcutor> mf;
+static int stoped = 0;
+void thread_timeout()
+{
+	for (int i = 0; i < 300; i++) {
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		//if (i % 10 == 0)printf("%d\n",i);
+		if (stoped)return;
+	}
+	mf->StopInterpretor();
+}
+void thread_main(std::shared_ptr <std::map<std::string, std::string> >&option)
+{
+	mf->LoopBrandAndDate(option);
+	stoped = 1;
+}
 int main(int argc,char* argv[])
 {
 	std::shared_ptr <std::map<std::string, std::string> >option;
@@ -94,13 +112,20 @@ int main(int argc,char* argv[])
 		return 0;
 	}
 	if (bl->Name == "")bl->Name = "noname";
-	std::shared_ptr<PtSim::SystemExcutor> mf;
+	//std::shared_ptr<PtSim::SystemExcutor> mf;
 	mf = std::shared_ptr<PtSim::SystemExcutor>(new PtSim::SystemExcutor(system_name,bl,Protra::Lib::Data::TimeFrame::Daily));
 	if (mf->initialized == 0) {
 		printf("PtSimConsole initialize error\n");
 		return 1;
 	}
-	mf->LoopBrandAndDate(option);
+	std::thread th1;
+	std::thread th2;
+
+	th1 = std::thread(thread_main,option);
+	th2 = std::thread(thread_timeout);
+	th1.join();
+	th2.join();
+
 	if (mf->excuted == 0) {
 		printf("PtSimConsole excute error\n");
 		return 1;
