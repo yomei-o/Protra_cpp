@@ -26,6 +26,7 @@
 #include <string>
 #include <sstream>
 #include <math.h>
+#include <cmath>
 
 inline std::string formatNumber(int num)
 {

@@ -35,6 +35,7 @@
 
 #include "Ptsim.h"
 
+std::shared_ptr <std::map<std::string, std::string> >option;
 static std::shared_ptr<PtSim::SystemExcutor> mf;
 static int stoped = 0;
 void thread_timeout()
@@ -46,14 +47,13 @@ void thread_timeout()
 	}
 	mf->StopInterpretor();
 }
-void thread_main(std::shared_ptr <std::map<std::string, std::string> >&option)
+void thread_main()
 {
 	mf->LoopBrandAndDate(option);
 	stoped = 1;
 }
 int main(int argc,char* argv[])
 {
-	std::shared_ptr <std::map<std::string, std::string> >option;
 	option = std::shared_ptr <std::map<std::string, std::string> >(new (std::map<std::string, std::string>));
 
 	std::shared_ptr<Protra::Lib::Config::BrandList> bl;
@@ -121,7 +121,7 @@ int main(int argc,char* argv[])
 	std::thread th1;
 	std::thread th2;
 
-	th1 = std::thread(thread_main,option);
+	th1 = std::thread(thread_main);
 	th2 = std::thread(thread_timeout);
 	th1.join();
 	th2.join();
