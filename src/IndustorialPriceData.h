@@ -45,6 +45,11 @@ public:
 
         prices = std::shared_ptr<std::vector<std::shared_ptr<Price> > >(new(std::vector<std::shared_ptr<Price> >));
 
+        std::shared_ptr<Protra::Lib::Data::BrandData>& bd = Protra::Lib::GlobalEnv::BrandData();
+        if (bd == nullptr) {
+            bd = std::shared_ptr<Protra::Lib::Data::BrandData>(new Protra::Lib::Data::BrandData());
+            bd->Load();
+        }
 
         ivd.Load();
         ivs = ivd.IndustorialValue33(ind);
@@ -98,6 +103,8 @@ public:
             o->Close = f;
             o->Date = p[0]->Date;
             prices->push_back(o);
+            //printf("%04d/%02d/%02d  %d\n",
+            //    o->Date.Year,o->Date.Month,o->Date.Day,o->Close);
         }
         ret = std::shared_ptr<PriceList>(new PriceList(prices,TimeFrame::Daily));
         return ret;
