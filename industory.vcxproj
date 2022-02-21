@@ -24,6 +24,7 @@
     <ClInclude Include="src\EndOfMonth.h" />
     <ClInclude Include="src\IndustorialValue.h" />
     <ClInclude Include="src\Industory.h" />
+    <ClInclude Include="src\IndustorialPriceData.h" />
     <ClInclude Include="src\MarketValue.h" />
     <ClInclude Include="src\MarketValueConfig.h" />
     <ClInclude Include="src\splitreplace.h" />
