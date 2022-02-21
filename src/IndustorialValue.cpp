@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include "IndustorialValue.h"
 #include "BrandData.h"
+#include "IndustorialPriceData.h"
 
 // debug 
 #if defined(_WIN32) && !defined(__GNUC__)
@@ -48,6 +49,18 @@ int main()
 	printf("RefCapital=%g\n", d);
 	d = ivd.GetIndex(ivs);
 	printf("Index=%g\n", d);
+
+	IndustorialPriceData ipd;
+	std::shared_ptr<PriceList> ipl;
+	std::shared_ptr<Price> p;
+
+	ipl = ipd.GetPricesIndustory33(25);
+	for (int i = 0; i < ipl->Count(); i++) {
+		p=ipl->Price(i);
+		printf("%04d/%02d/%02d  %d\n",
+			p->Date.Year, p->Date.Month, p->Date.Day,
+			p->Close);
+	}
 	return 0;
 }
 
