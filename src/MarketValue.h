@@ -28,6 +28,7 @@
 
 #include"StreamReader.h"
 #include"splitreplace.h"
+#include"MarketValueConfig.h"
 
 namespace Protra {
 namespace Lib {
@@ -38,8 +39,8 @@ public:
     std::string Name;
     std::string Date;
     int NumBrand;
-    double Capital;
-    double RefCapital;
+    FLOAT Capital;
+    FLOAT RefCapital;
     MarketValue()
     {
         RefCapital = 0;

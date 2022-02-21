@@ -30,6 +30,7 @@
 #include"MarketValue.h"
 #include"EndOfMonth.h"
 #include"TopixWait.h"
+#include"MarketValueConfig.h"
 
 namespace Protra {
 namespace Lib {
@@ -38,10 +39,10 @@ namespace Data {
 class IndustorialValue {
 public:
     std::string Code;
-    double IndRefCapital;
-    double FloatStock;
-    double Capital;
-    double Close;
+    FLOAT IndRefCapital;
+    FLOAT FloatStock;
+    FLOAT Capital;
+    FLOAT Close;
     IndustorialValue()
     {
         Close = 0;
@@ -81,7 +82,7 @@ public:
         std::shared_ptr<class TopixWait> tw;
         std::vector<std::shared_ptr<class TopixWait>> tws;
         std::shared_ptr<class MarketValue> mv;
-        std::vector<double> k;
+        std::vector<FLOAT> k;
         std::shared_ptr<class IndustorialValue> iv;
         id = ind.Industory33(idx);
         if (id.size()==0)return ret;
@@ -95,7 +96,7 @@ public:
         mv=mvd.Industory33(idx);
         if (mv == nullptr)return ret;
         
-        double keisu=0,t;
+        FLOAT keisu=0,t;
         for (int i = 0; i < tws.size(); i++) {
             keisu += tws[i]->Wait;
         }
@@ -106,6 +107,10 @@ public:
         }
         for (int i = 0; i < tws.size(); i++) {
             std::shared_ptr<EndOfMonth> em = emd.Code(tws[i]->Code);
+            if (em == nullptr) {
+                ret.clear();
+                break;
+            }
             iv = std::shared_ptr<class IndustorialValue>(new IndustorialValue());
             iv->Code = tws[i]->Code;
             iv->IndRefCapital = mv->RefCapital;
@@ -114,7 +119,7 @@ public:
         }
         return ret;
     }
-    static int SetValue(std::vector<std::shared_ptr<class IndustorialValue> >& ivs, std::string code, double val)
+    static int SetValue(std::vector<std::shared_ptr<class IndustorialValue> >& ivs, std::string code, FLOAT val)
     {
         int ret = -1;
         for (int i = 0; i < ivs.size(); i++) {
@@ -126,24 +131,24 @@ public:
         }
         return ret;
     }
-    static double GetCapital(std::vector<std::shared_ptr<class IndustorialValue> >& ivs)
+    static FLOAT GetCapital(std::vector<std::shared_ptr<class IndustorialValue> >& ivs)
     {
-        double ret = 0;
+        FLOAT ret = 0;
         for (int i = 0; i < ivs.size(); i++) {
             ret += ivs[i]->Capital;
         }
         return ret;
     }
-    static double GetRefCapital(std::vector<std::shared_ptr<class IndustorialValue> >& ivs)
+    static FLOAT GetRefCapital(std::vector<std::shared_ptr<class IndustorialValue> >& ivs)
     {
-        double ret = 0;
+        FLOAT ret = 0;
         if (ivs.size() < 1)return ret;
         ret = ivs[0]->IndRefCapital;
         return ret;
     }
-    static double GetIndex(std::vector<std::shared_ptr<class IndustorialValue> >& ivs)
+    static FLOAT GetIndex(std::vector<std::shared_ptr<class IndustorialValue> >& ivs)
     {
-        double ret = 0;
+        FLOAT ret = 0;
         ret = GetCapital(ivs) / GetRefCapital(ivs) * 100;
         return ret;
     }

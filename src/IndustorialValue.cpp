@@ -31,6 +31,10 @@ int main()
 	std::vector<std::shared_ptr<IndustorialValue> >ivs;
 	ivd.Load();
 	ivs = ivd.IndustorialValue33(25);
+	if (ivs.size() == 0) {
+		printf("Error: Data file cannot open.\n");
+		return 1;
+	}
 	ivd.SetValue(ivs, "9201", 2405);
 	ivd.SetValue(ivs, "9202", 2668.5);
 	ivd.SetValue(ivs, "9232", 1309);

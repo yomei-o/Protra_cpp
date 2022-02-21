@@ -28,6 +28,7 @@
 
 #include"StreamReader.h"
 #include"splitreplace.h"
+#include"MarketValueConfig.h"
 
 //#define ENABLE_MUJINZOU_DATA 1
 
@@ -39,7 +40,7 @@ class EndOfMonth {
 public:
     std::string Code;
     std::string Date;
-    int Close;
+    FLOAT Close;
     EndOfMonth()
     {
         Close = 0;
@@ -48,7 +49,7 @@ public:
     {
         printf("Code=%s\n", Code.c_str());
         printf("Date=%s\n", Date.c_str());
-        printf("Close=%d\n", Close);
+        printf("Close=%f\n", Close);
         printf("\n");
     }
 };

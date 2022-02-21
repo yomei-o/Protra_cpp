@@ -28,6 +28,7 @@
 
 #include"StreamReader.h"
 #include"splitreplace.h"
+#include"MarketValueConfig.h"
 
 namespace Protra {
 namespace Lib {
@@ -40,7 +41,7 @@ public:
     std::string Code;
     std::string Industory;
 
-    double Wait;
+    FLOAT Wait;
     TopixWait()
     {
         Wait = 0;
