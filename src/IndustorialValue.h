@@ -119,6 +119,49 @@ public:
         }
         return ret;
     }
+    std::vector<std::shared_ptr<class IndustorialValue> > IndustorialValue17(int idx) {
+        std::vector<std::shared_ptr<class IndustorialValue> > ret;
+        std::vector<std::shared_ptr<class Industory> > id;
+        std::shared_ptr<class TopixWait> tw;
+        std::vector<std::shared_ptr<class TopixWait>> tws;
+        std::shared_ptr<class MarketValue> mv;
+        std::vector<FLOAT> k;
+        std::shared_ptr<class IndustorialValue> iv;
+        id = ind.Industory17(idx);
+        if (id.size() == 0)return ret;
+        for (int i = 0; i < id.size(); i++) {
+            tw = twd.Code(id[i]->Code);
+            if (tw == nullptr)continue;
+            //tw->Print();
+            tws.push_back(tw);
+        }
+        if (tws.size() == 0)return ret;
+        mv = mvd.Industory17(idx);
+        if (mv == nullptr)return ret;
+
+        FLOAT keisu = 0, t;
+        for (int i = 0; i < tws.size(); i++) {
+            keisu += tws[i]->Wait;
+        }
+        for (int i = 0; i < tws.size(); i++) {
+            t = tws[i]->Wait / keisu;
+            k.push_back(t);
+
+        }
+        for (int i = 0; i < tws.size(); i++) {
+            std::shared_ptr<EndOfMonth> em = emd.Code(tws[i]->Code);
+            if (em == nullptr) {
+                ret.clear();
+                break;
+            }
+            iv = std::shared_ptr<class IndustorialValue>(new IndustorialValue());
+            iv->Code = tws[i]->Code;
+            iv->IndRefCapital = mv->RefCapital;
+            iv->FloatStock = mv->Capital * k[i] / em->Close;
+            ret.push_back(iv);
+        }
+        return ret;
+    }
     static int SetValue(std::vector<std::shared_ptr<class IndustorialValue> >& ivs, std::string code, FLOAT val)
     {
         int ret = -1;

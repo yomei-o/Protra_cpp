@@ -64,8 +64,18 @@ int main()
 	}
 #endif
 
-#if 1
+#if 0
 	ipl = ipd.GetPricesIndustory33(3);
+	for (int i = 0; ipl != nullptr && i < ipl->Count(); i++) {
+		p = ipl->Price(i);
+		printf("%04d/%02d/%02d  %d\n",
+			p->Date.Year, p->Date.Month, p->Date.Day,
+			p->Close);
+	}
+#endif
+
+#if 1
+	ipl = ipd.GetPricesIndustory17(1);
 	for (int i = 0; ipl != nullptr && i < ipl->Count(); i++) {
 		p = ipl->Price(i);
 		printf("%04d/%02d/%02d  %d\n",
