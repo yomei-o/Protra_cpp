@@ -151,10 +151,18 @@ public:
             bd = std::shared_ptr<Protra::Lib::Data::BrandData>(new Protra::Lib::Data::BrandData());
             bd->Load();
         }
+        if (bd->_data.size() == 0) {
+            printf("BranData file cannot open!!\n");
+            return ret;
+        }
 
         ivd.Load();
         ivs = ivd.IndustorialValue17(ind);
         if (ivs.size() == 0)return ret;
+
+        for (int i = 0; i < ivs.size(); i++) {
+            //ivs[i]->Print();
+        }
 
         for (int i = 0; i < ivs.size(); i++) {
             tpl = PriceData::GetPrices(ivs[i]->Code, TimeFrame::Daily);
@@ -191,13 +199,12 @@ public:
                 if (p->Date.Value != dt.Value)continue;
                 ivd.SetValue(ivs, p->Code, p->Close);
                 idx[j]++;
-
-                f = ivd.GetIndex(ivs)*bai17(ind);
-                std::shared_ptr<Price> o = std::shared_ptr<Price>(new Price);
-                o->Close = f;
-                o->Date = dt;
-                prices->push_back(o);
             }
+            f = ivd.GetIndex(ivs) * bai17(ind);
+            std::shared_ptr<Price> o = std::shared_ptr<Price>(new Price);
+            o->Close = f;
+            o->Date = dt;
+            prices->push_back(o);
         }
         ret = std::shared_ptr<PriceList>(new PriceList(prices, TimeFrame::Daily));
         return ret;

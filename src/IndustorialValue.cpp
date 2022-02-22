@@ -27,34 +27,13 @@ int main()
 	//	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_WNDW);
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-#if 0
-	IndustorialValueData ivd;
-	std::vector<std::shared_ptr<IndustorialValue> >ivs;
-	ivd.Load();
-	ivs = ivd.IndustorialValue33(25);
-	if (ivs.size() == 0) {
-		printf("Error: Data file cannot open.\n");
-		return 1;
-	}
-	ivd.SetValue(ivs, "9201", 2405);
-	ivd.SetValue(ivs, "9202", 2668.5);
-	ivd.SetValue(ivs, "9232", 1309);
-	for (int i = 0; i < ivs.size(); i++) {
-		ivs[i]->Print();
-	}
-	double d;
-	d = ivd.GetCapital(ivs);
-	printf("Capital=%g\n",d);
-	d = ivd.GetRefCapital(ivs);
-	printf("RefCapital=%g\n", d);
-	d = ivd.GetIndex(ivs);
-	printf("Index=%g\n", d);
-#endif
 
 	IndustorialPriceData ipd;
 	std::shared_ptr<PriceList> ipl;
 	std::shared_ptr<Price> p;
-#if 0
+	std::shared_ptr<Price> lp;
+
+#if 1
 	ipl = ipd.GetPricesIndustory33(25);
 	for (int i = 0; ipl!=nullptr && i < ipl->Count(); i++) {
 		p=ipl->Price(i);
@@ -64,16 +43,6 @@ int main()
 	}
 #endif
 
-
-#if 0
-	ipl = ipd.GetPricesIndustory17(1);
-	for (int i = 0; ipl != nullptr && i < ipl->Count(); i++) {
-		p = ipl->Price(i);
-		printf("%04d/%02d/%02d  %d\n",
-			p->Date.Year, p->Date.Month, p->Date.Day,
-			p->Close);
-	}
-#endif
 
 #if 1
 	int sz;
@@ -85,6 +54,15 @@ int main()
 		printf("%d  %04d/%02d/%02d  %d\n",i,
 			p->Date.Year, p->Date.Month, p->Date.Day,
 			p->Close);
+		for (int j = 1; j < sz - 1; j++) {
+			lp = p;
+			p = ipl->Price(j);
+			if (lp->Date.Year == p->Date.Year)continue;
+			printf("%d  %04d/%02d/%02d  %d\n", i,
+				p->Date.Year, p->Date.Month, p->Date.Day,
+				p->Close);
+		}
+
 		p = ipl->Price(sz-1);
 		printf("%d  %04d/%02d/%02d  %d\n", i,
 			p->Date.Year, p->Date.Month, p->Date.Day,
