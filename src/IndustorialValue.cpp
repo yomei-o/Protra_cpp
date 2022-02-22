@@ -27,7 +27,7 @@ int main()
 	//	_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_WNDW);
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 #endif
-
+#if 0
 	IndustorialValueData ivd;
 	std::vector<std::shared_ptr<IndustorialValue> >ivs;
 	ivd.Load();
@@ -49,11 +49,11 @@ int main()
 	printf("RefCapital=%g\n", d);
 	d = ivd.GetIndex(ivs);
 	printf("Index=%g\n", d);
+#endif
 
 	IndustorialPriceData ipd;
 	std::shared_ptr<PriceList> ipl;
 	std::shared_ptr<Price> p;
-
 #if 0
 	ipl = ipd.GetPricesIndustory33(25);
 	for (int i = 0; ipl!=nullptr && i < ipl->Count(); i++) {

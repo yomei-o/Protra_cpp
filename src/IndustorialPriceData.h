@@ -34,6 +34,26 @@ namespace Data {
 class IndustorialPriceData
 {
 public:
+    static FLOAT bai33(int idx){
+        FLOAT ret = 1;
+        switch (idx) {
+        case 10:
+        case 11:
+        case 27:
+        case 28:
+        case 29:
+        case 30:
+        case 31:
+        case 32:
+            ret = 10;
+            break;
+        }
+        return ret;
+    }
+    static FLOAT bai17(int idx) {
+        FLOAT ret = 1;
+        return ret;
+    }
     static std::shared_ptr<PriceList> GetPricesIndustory33(int ind)
     {
         std::shared_ptr<PriceList> ret;
@@ -61,6 +81,10 @@ public:
         ivd.Load();
         ivs = ivd.IndustorialValue33(ind);
         if (ivs.size() == 0)return ret;
+
+        for (int i = 0; i < ivs.size(); i++) {
+            //ivs[i]->Print();
+        }
 
         for (int i = 0; i < ivs.size(); i++) {
             tpl=PriceData::GetPrices(ivs[i]->Code, TimeFrame::Daily);
@@ -98,7 +122,7 @@ public:
                 ivd.SetValue(ivs, p->Code, p->Close);
                 idx[j]++;
             }
-            f = ivd.GetIndex(ivs);
+            f = ivd.GetIndex(ivs)*bai33(ind);
             std::shared_ptr<Price> o = std::shared_ptr<Price>(new Price);
             o->Close = f;
             o->Date = dt;
@@ -168,7 +192,7 @@ public:
                 ivd.SetValue(ivs, p->Code, p->Close);
                 idx[j]++;
 
-                f = ivd.GetIndex(ivs);
+                f = ivd.GetIndex(ivs)*bai17(ind);
                 std::shared_ptr<Price> o = std::shared_ptr<Price>(new Price);
                 o->Close = f;
                 o->Date = dt;
