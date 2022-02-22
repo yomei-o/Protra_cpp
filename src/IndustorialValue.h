@@ -98,6 +98,7 @@ public:
         
         FLOAT keisu=0,t;
         for (int i = 0; i < tws.size(); i++) {
+            //tws[i]->Print();
             keisu += tws[i]->Wait;
         }
         for (int i = 0; i < tws.size(); i++) {
@@ -113,7 +114,7 @@ public:
             }
             iv = std::shared_ptr<class IndustorialValue>(new IndustorialValue());
             iv->Code = tws[i]->Code;
-            iv->IndRefCapital = mv->RefCapital;
+            iv->IndRefCapital = mv->RefCapital*k[i];
             iv->FloatStock = mv->Capital * k[i] / em->Close;
             ret.push_back(iv);
         }
@@ -156,7 +157,7 @@ public:
             }
             iv = std::shared_ptr<class IndustorialValue>(new IndustorialValue());
             iv->Code = tws[i]->Code;
-            iv->IndRefCapital = mv->RefCapital;
+            iv->IndRefCapital = mv->RefCapital*k[i];
             iv->FloatStock = mv->Capital * k[i] / em->Close;
             ret.push_back(iv);
         }
@@ -174,10 +175,20 @@ public:
         }
         return ret;
     }
+    static int ClearValue(std::vector<std::shared_ptr<class IndustorialValue> >& ivs)
+    {
+        int ret = -1;
+        for (int i = 0; i < ivs.size(); i++) {
+            ivs[i]->Close = 0;
+            ivs[i]->Capital = 0;
+        }
+        return ret;
+    }
     static FLOAT GetCapital(std::vector<std::shared_ptr<class IndustorialValue> >& ivs)
     {
         FLOAT ret = 0;
         for (int i = 0; i < ivs.size(); i++) {
+            if (ivs[i]->Capital == 0)continue;
             ret += ivs[i]->Capital;
         }
         return ret;
@@ -186,7 +197,10 @@ public:
     {
         FLOAT ret = 0;
         if (ivs.size() < 1)return ret;
-        ret = ivs[0]->IndRefCapital;
+        for (int i = 0; i < ivs.size(); i++) {
+            if (ivs[i]->Capital == 0)continue;
+            ret += ivs[i]->IndRefCapital;
+        }
         return ret;
     }
     static FLOAT GetIndex(std::vector<std::shared_ptr<class IndustorialValue> >& ivs)

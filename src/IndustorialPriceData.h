@@ -22,6 +22,7 @@
 #define DF_INDUSTORIALPRICEDATA_H_
 
 #include <string>
+#include <algorithm>
 #include "PriceData.h"
 #include "IndustorialValue.h"
 
@@ -41,7 +42,9 @@ public:
         std::vector<std::shared_ptr <IndustorialValue> > ivs;
         std::vector<std::shared_ptr<PriceList> > pls;
         std::shared_ptr<PriceList> tpl;
-        std::vector<int> idx;
+
+        std::map<int, int> days;
+        std::vector<int> sort_days;
 
         prices = std::shared_ptr<std::vector<std::shared_ptr<Price> > >(new(std::vector<std::shared_ptr<Price> >));
 
@@ -49,6 +52,10 @@ public:
         if (bd == nullptr) {
             bd = std::shared_ptr<Protra::Lib::Data::BrandData>(new Protra::Lib::Data::BrandData());
             bd->Load();
+        }
+        if (bd->_data.size() == 0) {
+            printf("BranData file cannot open!!\n");
+            return ret;
         }
 
         ivd.Load();
@@ -60,55 +67,47 @@ public:
             if (tpl == nullptr)return ret;
             pls.push_back(tpl);
         }
-        int val = 0;
         for (int i = 0; i < ivs.size(); i++) {
-            if(val<pls[i]->First()->Date.Value)val= pls[i]->First()->Date.Value;
-            //printf("%d  %d\n", i, val);
+            for (int j = 0; j < pls[i]->Count();j++) {
+                days[pls[i]->Price(j)->Date.Value] = 1;
+            }
         }
-    restart:
-        idx.clear();
-        DateTime dt = DateTime(val);
-        int fval = pls[0]->SearchByDate(dt);
-        int lval=pls[0]->SearchByDate(pls[0]->Last()->Date);
-        int ct = lval - fval+1;
-        for (int i = 0; i < ivs.size(); i++) {
-                int id = pls[i]->SearchByDate(dt);
-                //printf("i=%d  idx=%d\n",i,id);
-                idx.push_back(id);
+        for (auto iter = days.begin(); iter != days.end(); ++iter) {
+            sort_days.push_back(iter->first);
         }
+        std::sort(sort_days.begin(), sort_days.end());
+        for (int i = 0; i < sort_days.size(); i++) {
+            DateTime t(sort_days[i]);
+            //printf("%04d/%02d/%02d\n",t.Year,t.Month,t.Day);
+        }
+
         FLOAT f;
-        for (int i = 0; i < ct; i++) {
-            dt = DateTime(fval+i);
-            std::vector<std::shared_ptr < Price>> p;
-            p.clear();
+        DateTime dt;
+        std::shared_ptr < Price> p;
+        std::vector<int> idx;
+        for (int i = 0; i < ivs.size(); i++) {
+            idx.push_back(0);
+        }
+        for (int i = 0; i < sort_days.size(); i++) {
+            ivd.ClearValue(ivs);
+            dt = DateTime(sort_days[i]);
             for (int j = 0; j < ivs.size(); j++) {
-                p.push_back(pls[j]->Price(i + idx[j]));
+                p = pls[j]->Price(idx[j]);
+                if (p == nullptr)continue;
+                if (p->Date.Value != dt.Value)continue;
+                ivd.SetValue(ivs, p->Code, p->Close);
+                idx[j]++;
             }
-            for (int j = 1; j < ivs.size(); j++) {
-                if (p[0]->Date.Value != p[j]->Date.Value) {
-                    prices->clear();
-                    val = std::max(p[0]->Date.Value, p[j]->Date.Value);
-                    goto restart;
-                }
-            }
-            for (int j = 0; j < ivs.size(); j++) {
-                //printf("%04d/%02d/%02d  code=%s  close=%f\n",
-                //    p[j]->Date.Year, p[j]->Date.Month, p[j]->Date.Day,
-                //    p[j]->Code.c_str(), (float)p[j]->Close);
-                ivd.SetValue(ivs, p[j]->Code, p[j]->Close);
-            }
-            //printf("\n");
-            f=ivd.GetIndex(ivs);
+            f = ivd.GetIndex(ivs);
             std::shared_ptr<Price> o = std::shared_ptr<Price>(new Price);
             o->Close = f;
-            o->Date = p[0]->Date;
+            o->Date = dt;
             prices->push_back(o);
-            //printf("%04d/%02d/%02d  %d\n",
-            //    o->Date.Year,o->Date.Month,o->Date.Day,o->Close);
         }
         ret = std::shared_ptr<PriceList>(new PriceList(prices,TimeFrame::Daily));
         return ret;
     }
+
     static std::shared_ptr<PriceList> GetPricesIndustory17(int ind)
     {
         std::shared_ptr<PriceList> ret;
@@ -117,7 +116,9 @@ public:
         std::vector<std::shared_ptr <IndustorialValue> > ivs;
         std::vector<std::shared_ptr<PriceList> > pls;
         std::shared_ptr<PriceList> tpl;
-        std::vector<int> idx;
+
+        std::map<int, int> days;
+        std::vector<int> sort_days;
 
         prices = std::shared_ptr<std::vector<std::shared_ptr<Price> > >(new(std::vector<std::shared_ptr<Price> >));
 
@@ -136,56 +137,47 @@ public:
             if (tpl == nullptr)return ret;
             pls.push_back(tpl);
         }
-        int val = 0;
         for (int i = 0; i < ivs.size(); i++) {
-            if (val < pls[i]->First()->Date.Value)val = pls[i]->First()->Date.Value;
-            //printf("%d  %d\n", i, val);
+            for (int j = 0; j < pls[i]->Count(); j++) {
+                days[pls[i]->Price(j)->Date.Value] = 1;
+            }
         }
-    restart:
-        idx.clear();
-        DateTime dt = DateTime(val);
-        int fval = pls[0]->SearchByDate(dt);
-        int lval = pls[0]->SearchByDate(pls[0]->Last()->Date);
-        int ct = lval - fval + 1;
-        for (int i = 0; i < ivs.size(); i++) {
-            int id = pls[i]->SearchByDate(dt);
-            //printf("i=%d  idx=%d\n",i,id);
-            idx.push_back(id);
+        for (auto iter = days.begin(); iter != days.end(); ++iter) {
+            sort_days.push_back(iter->first);
         }
+        std::sort(sort_days.begin(), sort_days.end());
+        for (int i = 0; i < sort_days.size(); i++) {
+            DateTime t(sort_days[i]);
+            //printf("%04d/%02d/%02d\n",t.Year,t.Month,t.Day);
+        }
+
         FLOAT f;
-        for (int i = 0; i < ct; i++) {
-            dt = DateTime(fval + i);
-            std::vector<std::shared_ptr < Price>> p;
-            p.clear();
+        DateTime dt;
+        std::shared_ptr < Price> p;
+        std::vector<int> idx;
+        for (int i = 0; i < ivs.size(); i++) {
+            idx.push_back(0);
+        }
+        for (int i = 0; i < sort_days.size(); i++) {
+            ivd.ClearValue(ivs);
+            dt = DateTime(sort_days[i]);
             for (int j = 0; j < ivs.size(); j++) {
-                p.push_back(pls[j]->Price(i + idx[j]));
+                p = pls[j]->Price(idx[j]);
+                if (p == nullptr)continue;
+                if (p->Date.Value != dt.Value)continue;
+                ivd.SetValue(ivs, p->Code, p->Close);
+                idx[j]++;
+
+                f = ivd.GetIndex(ivs);
+                std::shared_ptr<Price> o = std::shared_ptr<Price>(new Price);
+                o->Close = f;
+                o->Date = dt;
+                prices->push_back(o);
             }
-            for (int j = 1; j < ivs.size(); j++) {
-                if (p[0]->Date.Value != p[j]->Date.Value) {
-                    prices->clear();
-                    val = std::max(p[0]->Date.Value, p[j]->Date.Value);
-                    goto restart;
-                }
-            }
-            for (int j = 0; j < ivs.size(); j++) {
-                //printf("%04d/%02d/%02d  code=%s  close=%f\n",
-                //    p[j]->Date.Year, p[j]->Date.Month, p[j]->Date.Day,
-                //    p[j]->Code.c_str(), (float)p[j]->Close);
-                ivd.SetValue(ivs, p[j]->Code, p[j]->Close);
-            }
-            //printf("\n");
-            f = ivd.GetIndex(ivs);
-            std::shared_ptr<Price> o = std::shared_ptr<Price>(new Price);
-            o->Close = f;
-            o->Date = p[0]->Date;
-            prices->push_back(o);
-            //printf("%04d/%02d/%02d  %d\n",
-            //    o->Date.Year,o->Date.Month,o->Date.Day,o->Close);
         }
         ret = std::shared_ptr<PriceList>(new PriceList(prices, TimeFrame::Daily));
         return ret;
     }
-
 
 };
 

@@ -232,7 +232,7 @@ public:
             };
         }
         catch (...) {
-
+            _data.clear();
         }
     }
 
